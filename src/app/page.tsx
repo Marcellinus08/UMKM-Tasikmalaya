@@ -1,65 +1,48 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import Header from '@/components/Header';
+import Dashboard from '@/components/Dashboard';
+import UMKMList from '@/components/UMKMList';
+
+// Import UMKMMap dynamically to avoid SSR issues with Leaflet
+const UMKMMap = dynamic(() => import('@/components/UMKMMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[420px] rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+  ),
+});
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Header />
+      
+      <main>
+        <div className="container mx-auto px-4 md:px-8">
+          {/* Dashboard Section */}
+          <Dashboard />
+
+          {/* Map Section */}
+          <section id="peta-umkm" className="mt-8">
+            <UMKMMap />
+          </section>
+
+          {/* UMKM List Section */}
+          <section id="daftar-umkm" className="mt-8">
+            <UMKMList />
+          </section>
         </div>
       </main>
+
+      <footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 mt-16">
+        <div className="container mx-auto px-4 md:px-8 py-8">
+          <p className="text-sm text-center text-gray-600 dark:text-gray-400">
+            © 2025 Peta UMKM Tasikmalaya. Mendukung pertumbuhan ekonomi lokal.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
