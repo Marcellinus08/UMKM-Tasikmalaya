@@ -199,24 +199,44 @@ export default function Map({ isDark, category }: MapProps) {
     filteredItems.forEach((item: UMKM) => {
       const color = CAT_COLOR[item.category] || '#2563EB';
       
-      // Create custom SVG pin icon
+      // Create futuristic modern pin icon with glow effect (reversed colors)
       const svgIcon = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 40" width="32" height="40">
-          <defs>
-            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
-            </filter>
-          </defs>
-          <path d="M16 0C9.4 0 4 5.4 4 12c0 7 12 28 12 28s12-21 12-28c0-6.6-5.4-12-12-12z" fill="${color}" filter="url(#shadow)"/>
-          <circle cx="16" cy="12" r="5" fill="white" opacity="0.9"/>
-        </svg>
+        <div class="pin-container">
+          <!-- Pulse ring animation -->
+          <div class="pin-pulse" style="background: ${color}20;"></div>
+          <div class="pin-pulse-2" style="background: ${color}15;"></div>
+          
+          <!-- Main pin body with white gradient -->
+          <div class="pin-body" style="
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            box-shadow: 
+              0 0 20px rgba(255,255,255,0.5),
+              0 4px 15px rgba(0,0,0,0.3),
+              inset 0 1px 0 rgba(255,255,255,0.8);
+            border: 3px solid ${color};
+          ">
+            <!-- Inner glow circle with color -->
+            <div class="pin-glow" style="
+              background: radial-gradient(circle, ${color}dd 0%, ${color}99 50%, transparent 70%);
+            "></div>
+            
+            <!-- Center dot with category color (no animation) -->
+            <div class="pin-dot pin-dot-static" style="
+              background: ${color};
+              box-shadow: 0 0 12px ${color}, 0 0 4px ${color}cc;
+            "></div>
+          </div>
+          
+          <!-- Bottom shadow -->
+          <div class="pin-shadow"></div>
+        </div>
       `;
       
       const customIcon = L.divIcon({
         html: svgIcon,
-        iconSize: [32, 40],
-        iconAnchor: [16, 40],
-        popupAnchor: [0, -40],
+        iconSize: [40, 50],
+        iconAnchor: [20, 45],
+        popupAnchor: [0, -45],
         className: 'custom-pin-marker',
       });
       

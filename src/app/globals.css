@@ -29,6 +29,145 @@
   .leaflet-bottom {
     z-index: 1 !important;
   }
+
+  /* Custom marker styles */
+  .custom-pin-marker {
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer;
+  }
+
+  /* Pin container */
+  .pin-container {
+    position: relative;
+    width: 40px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Pulse ring animations */
+  .pin-pulse,
+  .pin-pulse-2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .pin-pulse {
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .pin-pulse-2 {
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite 1s;
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.5);
+    }
+    15% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(2.5);
+    }
+  }
+
+  /* Main pin body */
+  .pin-body {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+  }
+
+  /* Inner glow */
+  .pin-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      opacity: 0.8;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  /* Center dot */
+  .pin-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  /* Static dot - no animation on hover */
+  .pin-dot-static {
+    transition: none !important;
+  }
+
+  /* Bottom shadow */
+  .pin-shadow {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 8px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  /* Hover effects */
+  .custom-pin-marker:hover .pin-body {
+    transform: rotate(-45deg) scale(1.15) translateY(-3px);
+    box-shadow: 
+      0 0 30px currentColor,
+      0 8px 20px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  /* Remove dot bounce animation on hover */
+  .custom-pin-marker:hover .pin-dot-static {
+    animation: none;
+  }
+
+  .custom-pin-marker:hover .pin-pulse,
+  .custom-pin-marker:hover .pin-pulse-2 {
+    animation-duration: 1s;
+  }
 }
 
 @layer components {
