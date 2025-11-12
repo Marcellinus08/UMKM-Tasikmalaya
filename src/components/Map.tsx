@@ -43,9 +43,10 @@ const CAT_COLOR: Record<string, string> = {
 export interface MapProps {
   isDark: boolean;
   category: string;
+  mapStyle: string;
 }
 
-export default function Map({ isDark, category }: MapProps) {
+export default function Map({ isDark, category, mapStyle }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const layerGroupRef = useRef<L.LayerGroup | null>(null);
   const [umkms, setUmkms] = useState<UMKM[]>([]);
@@ -110,14 +111,54 @@ export default function Map({ isDark, category }: MapProps) {
 
     layerGroupRef.current = L.layerGroup().addTo(mapRef.current);
 
-    const lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> kontributor',
+    // Define different map styles
+    const mapStyles: Record<string, { light: string; dark: string; attribution: string; subdomains?: string }> = {
+      openstreetmap: {
+        light: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: 'abc'
+      },
+      esri: {
+        light: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        attribution: 'Tiles &copy; Esri',
+        subdomains: undefined
+      },
+      voyager: {
+        light: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd'
+      },
+      satellite: {
+        light: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        dark: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        subdomains: undefined
+      },
+      terrain: {
+        light: 'https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}.jpg',
+        dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+        subdomains: undefined
+      }
+    };
+
+    const selectedStyle = mapStyles[mapStyle] || mapStyles.openstreetmap;
+
+    // Light mode tiles
+    const lightTiles = L.tileLayer(selectedStyle.light, {
+      attribution: selectedStyle.attribution,
       maxZoom: 19,
+      ...(selectedStyle.subdomains && { subdomains: selectedStyle.subdomains })
     });
 
-    const darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | &copy; CARTO',
+    // Dark mode tiles
+    const darkTiles = L.tileLayer(selectedStyle.dark, {
+      attribution: selectedStyle.attribution,
       maxZoom: 19,
+      ...(selectedStyle.subdomains && { subdomains: selectedStyle.subdomains })
     });
 
     // Set initial base layer
@@ -141,7 +182,7 @@ export default function Map({ isDark, category }: MapProps) {
         mapRef.current = null;
       }
     };
-  }, [umkms, isDark]);
+  }, [umkms, isDark, mapStyle]);
 
   // Handle dark mode toggle
   useEffect(() => {
@@ -262,7 +303,7 @@ export default function Map({ isDark, category }: MapProps) {
         mapRef.current.fitBounds(bounds.pad(0.1), { maxZoom: 14 });
       }
     }
-  }, [category, umkms, selectedLocation, isDark]);
+  }, [category, umkms, selectedLocation, isDark, mapStyle]);
 
   return <div id="map" className="w-full h-[420px] rounded-lg" />;
 }

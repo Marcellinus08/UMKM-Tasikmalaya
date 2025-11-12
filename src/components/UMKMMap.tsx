@@ -30,6 +30,7 @@ export default function UMKMMap() {
   const [isDark, setIsDark] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [mapStyle, setMapStyle] = useState("openstreetmap"); // openstreetmap, esri, voyager, satellite, terrain
 
   // Fetch categories from API
   useEffect(() => {
@@ -80,30 +81,52 @@ export default function UMKMMap() {
         Klik marker pada peta untuk melihat detail UMKM atau pilih dari daftar.
       </p>
       <div className="bg-card-light dark:bg-card-dark p-4 md:p-6 rounded-lg shadow-md">
-        <MapComponent isDark={isDark} category={category} />
+        <MapComponent isDark={isDark} category={category} mapStyle={mapStyle} />
         <div className="mt-4 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
           <div className="flex items-center gap-2 text-sm text-subtext-light dark:text-subtext-dark">
             <span className="material-icons text-primary">layers</span>
             <span>{isDark ? "Peta gelap" : "Peta terang"}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <label
-              htmlFor="map-cat"
-              className="text-sm text-subtext-light dark:text-subtext-dark"
-            >
-              Filter kategori:
-            </label>
-            <select
-              id="map-cat"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="border border-gray-200 dark:border-gray-700 rounded-lg bg-card-light dark:bg-card-dark text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="Semua">Semua</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="map-style"
+                className="text-sm text-subtext-light dark:text-subtext-dark"
+              >
+                Jenis peta:
+              </label>
+              <select
+                id="map-style"
+                value={mapStyle}
+                onChange={(e) => setMapStyle(e.target.value)}
+                className="border border-gray-200 dark:border-gray-700 rounded-lg bg-card-light dark:bg-card-dark text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="openstreetmap">OpenStreetMap</option>
+                <option value="esri">Esri Street</option>
+                <option value="voyager">Voyager</option>
+                <option value="satellite">Satelit</option>
+                <option value="terrain">Terrain</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="map-cat"
+                className="text-sm text-subtext-light dark:text-subtext-dark"
+              >
+                Filter kategori:
+              </label>
+              <select
+                id="map-cat"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="border border-gray-200 dark:border-gray-700 rounded-lg bg-card-light dark:bg-card-dark text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="Semua">Semua</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </div>
