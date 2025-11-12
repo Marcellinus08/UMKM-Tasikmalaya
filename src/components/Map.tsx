@@ -262,7 +262,7 @@ export default function Map({ isDark, category }: MapProps) {
         mapRef.current.fitBounds(bounds.pad(0.1), { maxZoom: 14 });
       }
     }
-  }, [category, umkms, selectedLocation]);
+  }, [category, umkms, selectedLocation, isDark]);
 
   return <div id="map" className="w-full h-[420px] rounded-lg" />;
 }
