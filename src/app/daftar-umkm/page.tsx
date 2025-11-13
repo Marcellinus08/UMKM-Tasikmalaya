@@ -89,7 +89,7 @@ export default function DaftarUMKM() {
               Daftar <span className="bg-gradient-to-r from-emerald-500 to-green-500 bg-clip-text text-transparent">UMKM</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Temukan dan hubungi UMKM lokal di Tasikmalaya dengan mudah
+              Temukan UMKM lokal di Tasikmalaya dengan mudah
             </p>
           </div>
 
@@ -221,7 +221,7 @@ export default function DaftarUMKM() {
                             {umkm.name}
                           </h3>
                           <span
-                            className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-gray-900 dark:text-white"
+                            className="inline-block py-1 rounded-full text-xs font-semibold text-gray-900 dark:text-white"
                             style={{ backgroundColor: CAT_COLOR[umkm.category] }}
                           >
                             {umkm.category}
@@ -241,13 +241,6 @@ export default function DaftarUMKM() {
                       </div>
                       
                       <div className="flex gap-2">
-                        <a
-                          href={`tel:${umkm.phone}`}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-300 to-green-300 text-white rounded-lg font-semibold hover:from-emerald-400 hover:to-green-400 transition-all duration-300 shadow-md hover:shadow-lg"
-                        >
-                          <span className="material-icons text-sm">call</span>
-                          <span>Hubungi</span>
-                        </a>
                         <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg font-semibold hover:from-emerald-600 hover:to-green-600 transition-all duration-300 shadow-md hover:shadow-lg">
                           <span className="material-icons text-sm">directions</span>
                           <span>Lokasi</span>
@@ -280,7 +273,7 @@ export default function DaftarUMKM() {
                                   {umkm.name}
                                 </h3>
                                 <span
-                                  className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white"
+                                  className="inline-block py-1 rounded-full text-xs font-semibold text-white"
                                   style={{ backgroundColor: CAT_COLOR[umkm.category] }}
                                 >
                                   {umkm.category}
@@ -310,13 +303,6 @@ export default function DaftarUMKM() {
                           </div>
                           
                           <div className="flex md:flex-col gap-2 md:w-32 flex-shrink-0">
-                            <a
-                              href={`tel:${umkm.phone}`}
-                              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-md hover:shadow-lg text-sm"
-                            >
-                              <span className="material-icons text-sm">call</span>
-                              <span>Hubungi</span>
-                            </a>
                             <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg text-sm">
                               <span className="material-icons text-sm">directions</span>
                               <span>Lokasi</span>
