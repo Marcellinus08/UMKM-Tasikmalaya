@@ -103,7 +103,7 @@ export default function Home() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-16 px-4 bg-white dark:bg-gray-800/50 backdrop-blur-lg">
+        <section className="py-16 px-4">
           <div className="container mx-auto max-w-6xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
@@ -241,7 +241,7 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 px-4 bg-white dark:bg-gray-800/50 backdrop-blur-lg">
+        <section className="py-20 px-4">
           <div className="container mx-auto max-w-4xl text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               Siap Menjelajahi UMKM Tasikmalaya?
