@@ -105,35 +105,60 @@ export default function Home() {
         {/* Stats Section */}
         <section className="py-16 px-4 bg-white dark:bg-gray-800/50 backdrop-blur-lg">
           <div className="container mx-auto max-w-6xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { icon: 'store', label: 'UMKM Terdaftar', value: stats.totalUMKM, color: 'from-emerald-400 to-green-500' },
-                { icon: 'category', label: 'Kategori Usaha', value: stats.categories, color: 'from-green-400 to-teal-500' },
-                { icon: 'location_city', label: 'Wilayah Tercakup', value: stats.locations, color: 'from-teal-400 to-cyan-500' }
+                { icon: 'store', label: 'UMKM Terdaftar', value: stats.totalUMKM, color: 'from-emerald-400 to-green-500', bgColor: 'from-emerald-50 to-green-50', darkBgColor: 'from-emerald-900/20 to-green-900/20' },
+                { icon: 'category', label: 'Kategori Usaha', value: stats.categories, color: 'from-green-400 to-teal-500', bgColor: 'from-green-50 to-teal-50', darkBgColor: 'from-green-900/20 to-teal-900/20' },
+                { icon: 'location_city', label: 'Wilayah Tercakup', value: stats.locations, color: 'from-teal-400 to-cyan-500', bgColor: 'from-teal-50 to-cyan-50', darkBgColor: 'from-teal-900/20 to-cyan-900/20' }
               ].map((stat, index) => (
                 <div
                   key={stat.label}
-                  className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 group"
+                  className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${stat.bgColor} dark:${stat.darkBgColor} border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 group`}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  {/* Icon background */}
-                  <div className={`absolute top-6 right-6 w-16 h-16 bg-gradient-to-br ${stat.color} rounded-xl opacity-10 group-hover:opacity-20 transition-opacity`}></div>
+                  {/* Decorative circles */}
+                  <div className={`absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br ${stat.color} rounded-full opacity-10 group-hover:opacity-20 transition-opacity`}></div>
+                  <div className={`absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br ${stat.color} rounded-full opacity-5`}></div>
                   
-                  <div className="relative">
-                    <div className={`inline-flex p-3 bg-gradient-to-br ${stat.color} rounded-xl shadow-lg mb-4`}>
-                      <span className="material-icons text-white text-3xl">{stat.icon}</span>
+                  {/* Pattern overlay */}
+                  <div className="absolute inset-0 opacity-5">
+                    <div className="absolute inset-0" style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2310b981' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='13' cy='13' r='1'/%3E%3C/g%3E%3C/svg%3E")`
+                    }}></div>
+                  </div>
+                  
+                  <div className="relative p-6">
+                    {/* Icon and Value Row */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`flex items-center justify-center w-14 h-14 bg-gradient-to-br ${stat.color} rounded-xl shadow-lg group-hover:scale-110 transition-transform`}>
+                        <span className="material-icons text-white text-2xl">{stat.icon}</span>
+                      </div>
+                      
+                      <div className="text-right">
+                        <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                          {loading ? (
+                            <span className="inline-block w-16 h-10 bg-gray-300 dark:bg-gray-600 animate-pulse rounded"></span>
+                          ) : (
+                            stat.value
+                          )}
+                        </div>
+                      </div>
                     </div>
                     
-                    <div className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">
-                      {loading ? (
-                        <span className="inline-block w-20 h-12 bg-gray-200 dark:bg-gray-600 animate-pulse rounded"></span>
-                      ) : (
-                        stat.value
-                      )}
+                    {/* Label */}
+                    <div className="flex items-center gap-2">
+                      <div className={`h-1 w-8 bg-gradient-to-r ${stat.color} rounded-full`}></div>
+                      <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                        {stat.label}
+                      </p>
                     </div>
                     
-                    <div className="text-gray-600 dark:text-gray-400 font-medium">
-                      {stat.label}
+                    {/* Progress bar effect */}
+                    <div className="mt-4 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full bg-gradient-to-r ${stat.color} rounded-full transition-all duration-1000 ease-out`}
+                        style={{ width: loading ? '0%' : '100%' }}
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -159,7 +184,7 @@ export default function Home() {
                 {
                   icon: 'map',
                   title: 'Peta Interaktif',
-                  description: 'Temukan UMKM terdekat dengan peta interaktif yang mudah digunakan',
+                  description: 'Temukan UMKM dengan peta interaktif yang mudah digunakan',
                   color: 'from-emerald-400 to-green-500'
                 },
                 {
@@ -171,13 +196,13 @@ export default function Home() {
                 {
                   icon: 'info',
                   title: 'Informasi Lengkap',
-                  description: 'Dapatkan detail kontak, alamat, dan deskripsi setiap UMKM',
+                  description: 'Dapatkan detail alamat, dan jam operasional dari setiap UMKM',
                   color: 'from-teal-400 to-cyan-500'
                 },
                 {
-                  icon: 'phone',
-                  title: 'Kontak Langsung',
-                  description: 'Hubungi UMKM langsung melalui nomor telepon yang tersedia',
+                  icon: 'bar_chart',
+                  title: 'Statistik UMKM',
+                  description: 'Lihat data dan statistik lengkap UMKM di berbagai wilayah',
                   color: 'from-emerald-500 to-green-600'
                 },
                 {
@@ -215,25 +240,18 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section - Green */}
-        <section className="py-20 px-4 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 relative overflow-hidden">
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-            }}></div>
-          </div>
-
-          <div className="container mx-auto max-w-4xl text-center relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+        {/* CTA Section */}
+        <section className="py-20 px-4 bg-white dark:bg-gray-800/50 backdrop-blur-lg">
+          <div className="container mx-auto max-w-4xl text-center">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               Siap Menjelajahi UMKM Tasikmalaya?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
               Bergabunglah dengan ribuan pengguna yang telah menemukan UMKM lokal favorit mereka
             </p>
             <Link
               href="/peta-umkm"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-white text-emerald-600 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 group"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl font-bold text-lg shadow-2xl hover:shadow-emerald-500/50 hover:from-emerald-600 hover:to-green-600 transform hover:-translate-y-1 transition-all duration-300 group"
             >
               <span>Mulai Sekarang</span>
               <span className="material-icons group-hover:translate-x-1 transition-transform">arrow_forward</span>
