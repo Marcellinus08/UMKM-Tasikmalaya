@@ -4,61 +4,44 @@ import Header from '@/components/Header';
 import Image from 'next/image';
 
 export default function Tentang() {
-  const features = [
+  const purposes = [
     {
-      icon: 'map',
-      title: 'Peta Interaktif',
-      description: 'Visualisasi lokasi UMKM dengan teknologi pemetaan modern'
+      icon: 'business_center',
+      title: 'Digitalisasi UMKM',
+      description: 'Membantu UMKM lokal bertransformasi digital dengan menyediakan platform online yang mudah diakses untuk meningkatkan visibilitas dan jangkauan pasar mereka.'
     },
     {
-      icon: 'search',
-      title: 'Pencarian Mudah',
-      description: 'Temukan UMKM dengan filter kategori dan lokasi'
+      icon: 'connecting_airports',
+      title: 'Menghubungkan Pelaku Usaha dengan Konsumen',
+      description: 'Menjembatani UMKM dengan masyarakat luas melalui sistem pemetaan digital yang interaktif, memudahkan konsumen menemukan produk dan layanan lokal yang mereka butuhkan.'
     },
     {
-      icon: 'phone',
-      title: 'Kontak Langsung',
-      description: 'Hubungi UMKM secara langsung melalui platform'
+      icon: 'trending_up',
+      title: 'Mendorong Pertumbuhan Ekonomi Lokal',
+      description: 'Memberikan kontribusi nyata pada perekonomian Tasikmalaya dengan meningkatkan aksesibilitas UMKM, menciptakan peluang bisnis baru, dan mendukung keberlanjutan usaha kecil menengah.'
     },
     {
-      icon: 'analytics',
-      title: 'Data Akurat',
-      description: 'Informasi UMKM yang terverifikasi dan terpercaya'
+      icon: 'insights',
+      title: 'Menyediakan Data & Analitik',
+      description: 'Menghadirkan informasi statistik dan analisis sebaran UMKM yang dapat digunakan untuk pengambilan keputusan strategis oleh pelaku usaha, pemerintah, dan pemangku kepentingan.'
     }
   ];
 
   const team = [
     {
-      name: 'Tim Teknologi',
-      role: 'Pengembangan Platform',
+      name: 'Marcellinus Geofani',
+      prodi: 'S1 Teknik Komputer',
       icon: 'code',
-      color: 'from-emerald-500 to-teal-500'
+      color: 'from-emerald-500 to-teal-500',
+      description: 'Pengembangan website'
     },
     {
-      name: 'Tim Data',
-      role: 'Validasi & Update Data',
-      icon: 'data_usage',
-      color: 'from-purple-500 to-pink-500'
-    },
-    {
-      name: 'Tim Komunitas',
-      role: 'Koordinasi UMKM',
-      icon: 'groups',
-      color: 'from-green-500 to-emerald-500'
-    },
-    {
-      name: 'Tim Dukungan',
-      role: 'Layanan Pengguna',
-      icon: 'support_agent',
-      color: 'from-orange-500 to-green-500'
+      name: 'Otniel',
+      prodi: 'S1 Teknik Komputer',
+      icon: 'palette',
+      color: 'from-purple-500 to-pink-500',
+      description: 'Pengumpulan data'
     }
-  ];
-
-  const stats = [
-    { label: 'UMKM Terdaftar', value: '100+', icon: 'store' },
-    { label: 'Kategori Usaha', value: '6+', icon: 'category' },
-    { label: 'Wilayah Tercakup', value: '8+', icon: 'location_city' },
-    { label: 'Pengguna Aktif', value: '1000+', icon: 'people' }
   ];
 
   return (
@@ -83,11 +66,52 @@ export default function Tentang() {
             </div>
 
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Platform <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Pemetaan UMKM</span>
+              Platform <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Pemetaan UMKM</span> Tasikmalaya
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Menghubungkan UMKM lokal dengan masyarakat melalui teknologi digital untuk mendukung pertumbuhan ekonomi Tasikmalaya
+              Solusi digital untuk menghubungkan, memetakan, dan mengembangkan UMKM lokal melalui teknologi informasi geografis yang mudah diakses oleh semua kalangan
             </p>
+          </div>
+
+          {/* Purpose Section */}
+          <div className="mb-16">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-full backdrop-blur-sm mb-6">
+                <span className="material-icons text-emerald-600 dark:text-emerald-500 text-sm">flag</span>
+                <span className="text-sm font-medium text-emerald-600 dark:text-emerald-500">Tujuan Platform</span>
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Mengapa Platform <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Ini Ada?</span>
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                Platform ini hadir dengan tujuan mulia untuk memberdayakan UMKM Tasikmalaya melalui transformasi digital
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {purposes.map((purpose, index) => (
+                <div
+                  key={index}
+                  className="group bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300"
+                >
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0">
+                      <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                        <span className="material-icons text-white text-3xl">{purpose.icon}</span>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                        {purpose.title}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        {purpose.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Mission & Vision */}
@@ -136,112 +160,43 @@ export default function Tentang() {
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 rounded-2xl p-12 mb-16 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-              }}></div>
-            </div>
-
-            <div className="relative grid grid-cols-2 md:grid-cols-4 gap-8">
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="inline-flex p-4 bg-white/20 rounded-xl mb-4">
-                    <span className="material-icons text-white text-4xl">{stat.icon}</span>
-                  </div>
-                  <div className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.value}</div>
-                  <div className="text-white/90 font-medium">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Features */}
-          <div className="mb-16">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                Fitur <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Platform</span>
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400">
-                Teknologi terkini untuk kemudahan akses informasi UMKM
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="group bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300"
-                >
-                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <span className="material-icons text-white text-3xl">{feature.icon}</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {feature.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Team */}
           <div className="mb-16">
             <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 to-purple-500/10 border border-emerald-500/20 rounded-full backdrop-blur-sm mb-6">
+                <span className="material-icons text-emerald-600 dark:text-emerald-500 text-sm">groups</span>
+                <span className="text-sm font-medium text-emerald-600 dark:text-emerald-500">Tim Pengembang</span>
+              </div>
               <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                Tim <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Kami</span>
+                Tim <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Pembuat Platform</span>
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400">
-                Dedikasi dan komitmen untuk kesuksesan UMKM lokal
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                Mahasiswa Universitas Telkom yang berkomitmen mengembangkan ekosistem digital untuk UMKM Tasikmalaya
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
               {team.map((member, index) => (
                 <div
                   key={index}
-                  className="group bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 text-center"
+                  className="group bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 w-full sm:w-64"
                 >
-                  <div className={`w-20 h-20 bg-gradient-to-br ${member.color} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg`}>
-                    <span className="material-icons text-white text-4xl">{member.icon}</span>
+                  <div className={`w-28 h-28 bg-gradient-to-br ${member.color} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg`}>
+                    <span className="material-icons text-white text-5xl">{member.icon}</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    {member.name}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {member.role}
-                  </p>
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                      {member.name}
+                    </h3>
+                    <div className="text-emerald-600 dark:text-emerald-500 font-semibold mb-1">
+                      {member.prodi}
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {member.description}
+                    </p>
+                  </div>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* CTA */}
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-12 text-center border border-gray-200 dark:border-gray-600">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Bergabunglah Bersama Kami
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-              Mari bersama-sama memajukan UMKM Tasikmalaya melalui transformasi digital
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/daftar-umkm"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
-              >
-                <span className="material-icons">store</span>
-                <span>Lihat Daftar UMKM</span>
-              </a>
-              <a
-                href="/kontak"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl border-2 border-gray-300 dark:border-gray-600 hover:border-emerald-500 dark:hover:border-emerald-500 transform hover:-translate-y-1 transition-all duration-300"
-              >
-                <span className="material-icons">mail</span>
-                <span>Hubungi Kami</span>
-              </a>
             </div>
           </div>
         </div>

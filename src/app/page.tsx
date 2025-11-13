@@ -180,10 +180,10 @@ export default function Home() {
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-                Fitur <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Unggulan</span>
+                Fitur <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Platform</span>
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                Platform lengkap untuk menemukan dan terhubung dengan UMKM lokal
+                Teknologi terkini untuk kemudahan akses informasi UMKM
               </p>
             </div>
 
