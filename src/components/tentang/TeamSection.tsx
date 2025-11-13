@@ -22,6 +22,7 @@ export default function TeamSection() {
     {
       name: 'Otniel',
       prodi: 'S1 Teknik Komputer',
+      avatar: '/abuy.jpeg',
       icon: 'palette',
       color: 'from-purple-500 to-pink-500',
       description: 'Pengumpulan data'
