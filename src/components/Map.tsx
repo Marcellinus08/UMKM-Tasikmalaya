@@ -309,17 +309,17 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
       .addTo(mapRef.current)
       .bindPopup(`
         <div style="
-          min-width: 220px;
           padding: 12px;
           background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
           border-radius: 10px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.1);
           border: 1px solid #e2e8f0;
+          text-align: center;
         ">
-          <!-- Header -->
           <div style="
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             margin-bottom: 10px;
           ">
@@ -342,15 +342,11 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
             ">Lokasi GPS Anda</div>
           </div>
           
-          <!-- Coordinates -->
           <div style="
-            background: #f1f5f9;
-            padding: 8px;
-            border-radius: 6px;
             font-family: 'Courier New', monospace;
             font-size: 11px;
             color: #475569;
-            line-height: 1.6;
+            line-height: 1.8;
           ">
             <div>Lat: <strong style="color: #1e293b;">${userLocation.lat.toFixed(6)}</strong></div>
             <div>Lng: <strong style="color: #1e293b;">${userLocation.lng.toFixed(6)}</strong></div>
