@@ -36,6 +36,8 @@ export default function PetaUMKM() {
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [umkms, setUmkms] = useState<UMKM[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUMKM, setSelectedUMKM] = useState<UMKM | null>(null);
+  const [mapStyle, setMapStyle] = useState('openstreetmap');
 
   useEffect(() => {
     // Fetch data UMKM dari API database
@@ -64,191 +66,167 @@ export default function PetaUMKM() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Fixed Green Blur Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-emerald-500/30 rounded-full blur-3xl animate-pulse-green"></div>
-        <div className="absolute top-1/3 right-20 w-80 h-80 bg-green-500/30 rounded-full blur-3xl animate-pulse-green-delay-1"></div>
-        <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-teal-500/30 rounded-full blur-3xl animate-pulse-green-delay-2"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-emerald-400/20 rounded-full blur-3xl animate-pulse-green"></div>
-      </div>
-
+    <div className="h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
       <Header />
       
-      <main className="relative z-10 pt-24 pb-16 px-4">
-        <div className="container mx-auto max-w-7xl">
-          {/* Header Section - Pastel */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-400/20 to-green-400/20 border border-emerald-400/30 rounded-full backdrop-blur-sm mb-6">
-              <span className="material-icons text-emerald-600 dark:text-emerald-500 text-sm">map</span>
-              <span className="text-sm font-medium text-emerald-700 dark:text-emerald-500">Peta Interaktif</span>
+      {/* Main Content: Fullscreen with Sidebar - Fixed positioning */}
+      <div className="fixed top-20 left-0 right-0 bottom-0 flex">
+        {/* Left Sidebar */}
+        <div className="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-lg h-full overflow-hidden">
+          {/* Search Box */}
+          <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+            <div className="relative mb-2">
+              <span className="material-icons absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                search
+              </span>
+              <input
+                type="text"
+                placeholder="Cari UMKM..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+              />
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4">
-              Peta <span className="bg-gradient-to-r from-emerald-500 to-green-500 bg-clip-text text-transparent">UMKM</span>
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Jelajahi lokasi UMKM di Tasikmalaya dengan peta interaktif
-            </p>
-          </div>
+            {/* Category Dropdown */}
+            <div className="mb-2">
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Kategori
+              </label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-gray-900 dark:text-white"
+              >
+                <option value="Semua">Semua Kategori</option>
+                {categories.filter(cat => cat !== 'Semua').map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
 
-          {/* Search and Filter Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Search */}
-              <div className="relative">
-                <span className="material-icons absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  search
-                </span>
-                <input
-                  type="text"
-                  placeholder="Cari nama atau deskripsi UMKM..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                />
-              </div>
-
-              {/* Category Filter */}
-              <div className="relative">
-                <span className="material-icons absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  filter_list
-                </span>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all appearance-none cursor-pointer"
-                >
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-                <span className="material-icons absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
-                  expand_more
-                </span>
-              </div>
+            {/* Map Style Dropdown */}
+            <div className="mb-2">
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Jenis Peta
+              </label>
+              <select
+                value={mapStyle}
+                onChange={(e) => setMapStyle(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-gray-900 dark:text-white"
+              >
+                <option value="openstreetmap">OpenStreetMap</option>
+                <option value="esri">Esri Street</option>
+                <option value="voyager">Voyager</option>
+                <option value="satellite">Satelit</option>
+                <option value="terrain">Terrain</option>
+              </select>
             </div>
 
             {/* Results counter */}
-            <div className="mt-4 flex items-center justify-between">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Menampilkan <span className="font-bold text-emerald-600 dark:text-emerald-500">{filteredUMKMs.length}</span> dari <span className="font-bold">{umkms.length}</span> UMKM
+            <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+              <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                <span className="text-emerald-600 dark:text-emerald-500">{filteredUMKMs.length}</span> UMKM ditemukan
               </p>
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="text-sm text-emerald-600 dark:text-emerald-500 hover:underline flex items-center gap-1"
-                >
-                  <span className="material-icons text-sm">close</span>
-                  Hapus pencarian
-                </button>
-              )}
             </div>
           </div>
 
-          {/* Map Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <span className="material-icons text-emerald-600">location_on</span>
-                Peta Lokasi UMKM
-              </h2>
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <span className="material-icons text-sm">info</span>
-                <span>Klik marker untuk info detail</span>
-              </div>
-            </div>
-            <UMKMMap />
-          </div>
-
-          {/* Legend Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <span className="material-icons">palette</span>
-              Legenda Kategori
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {Object.entries(CAT_COLOR).map(([category, color]) => (
-                <div
-                  key={category}
-                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                >
+          {/* UMKM List */}
+          <div className="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700">
+            {filteredUMKMs.map((umkm, index) => (
+              <div
+                key={index}
+                onClick={() => setSelectedUMKM(umkm)}
+                className={`p-2.5 cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
+                  selectedUMKM?.no === umkm.no ? 'bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500' : ''
+                }`}
+              >
+                <div className="flex items-start gap-2">
                   <div
-                    className="w-4 h-4 rounded-full shadow-md"
-                    style={{ backgroundColor: color }}
-                  ></div>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {category}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* UMKM List Below Map */}
-          <div className="mt-8">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <span className="material-icons text-emerald-600">format_list_bulleted</span>
-              Daftar UMKM
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredUMKMs.map((umkm, index) => (
-                <div
-                  key={index}
-                  className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transform hover:-translate-y-2 transition-all duration-300"
-                >
-                  {/* Category badge */}
-                  <div className="h-2" style={{ backgroundColor: CAT_COLOR[umkm.category] }}></div>
-                  
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-500 transition-colors">
-                        {umkm.name}
-                      </h4>
+                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm"
+                    style={{ 
+                      backgroundColor: CAT_COLOR[umkm.category] || '#6B7280'
+                    }}
+                  >
+                    <span className="material-icons text-xs" style={{ color: 'white' }}>store</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-0.5 truncate">
+                      {umkm.name}
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 line-clamp-1 leading-tight">
+                      {umkm.description}
+                    </p>
+                    <div className="flex items-center gap-2 text-xs">
                       <span
-                        className="px-3 py-1 rounded-full text-xs font-semibold text-white"
-                        style={{ backgroundColor: CAT_COLOR[umkm.category] }}
+                        className="px-1.5 py-0.5 rounded font-medium text-[10px]"
+                        style={{ 
+                          backgroundColor: CAT_COLOR[umkm.category] || '#6B7280',
+                          color: 'white'
+                        }}
                       >
                         {umkm.category}
                       </span>
+                      <span className="flex items-center gap-0.5 text-gray-500 dark:text-gray-400 text-[10px]">
+                        <span className="material-icons" style={{ fontSize: '11px' }}>location_on</span>
+                        {umkm.district}
+                      </span>
                     </div>
-                    
-                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-                      {umkm.description}
-                    </p>
-                    
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
-                        <span className="material-icons text-sm mt-0.5">location_on</span>
-                        <span className="flex-1">{umkm.address}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <span className="material-icons text-sm">phone</span>
-                        <a href={`tel:${umkm.phone}`} className="hover:text-emerald-600 dark:hover:text-emerald-500 transition-colors">
-                          {umkm.phone}
-                        </a>
-                      </div>
-                    </div>
-                    
-                    <button className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg font-semibold hover:from-emerald-600 hover:to-green-600 transition-all duration-300 group-hover:shadow-lg">
-                      <span className="material-icons text-sm">directions</span>
-                      <span>Lihat di Peta</span>
-                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4 mt-16">
-        <div className="container mx-auto max-w-6xl text-center">
-          <p className="text-gray-400">© 2025 UMKM Tasikmalaya. Mendukung pertumbuhan ekonomi lokal.</p>
+        {/* Right Side - Fullscreen Map */}
+        <div className="flex-1 h-full overflow-hidden relative">
+          <UMKMMap mapStyle={mapStyle} selectedCategory={selectedCategory} />
+
+          {/* Selected UMKM Detail Card */}
+          {selectedUMKM && (
+            <div className="absolute bottom-4 left-4 right-4 bg-white/98 dark:bg-gray-800/98 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-2xl">
+              <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-base text-gray-900 dark:text-white mb-1 truncate">
+                    {selectedUMKM.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-1">
+                    {selectedUMKM.description}
+                  </p>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex items-start gap-1.5 text-gray-600 dark:text-gray-400">
+                      <span className="material-icons text-sm">location_on</span>
+                      <span className="line-clamp-1">{selectedUMKM.address}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
+                      <span className="material-icons text-sm">phone</span>
+                      <a href={`tel:${selectedUMKM.phone}`} className="hover:text-emerald-600 transition-colors">
+                        {selectedUMKM.phone}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2 flex-shrink-0">
+                  <button className="px-3 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg text-sm font-medium hover:from-emerald-600 hover:to-green-600 transition-all flex items-center gap-1 shadow-md">
+                    <span className="material-icons text-sm">info</span>
+                    Detail
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedUMKM(null);
+                    }}
+                    className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                  >
+                    <span className="material-icons text-sm">close</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

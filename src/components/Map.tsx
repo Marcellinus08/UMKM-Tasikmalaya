@@ -215,6 +215,13 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
     // Fit map to bounds immediately
     mapRef.current.fitBounds(bounds.pad(0.1), { maxZoom: 14 });
 
+    // Invalidate size after a short delay to ensure proper rendering
+    setTimeout(() => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize();
+      }
+    }, 100);
+
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
@@ -502,5 +509,5 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
     }
   }, [category, umkms, selectedLocation, isDark, mapStyle, userLocation]);
 
-  return <div id="map" className="w-full h-[420px] rounded-lg" />;
+  return <div id="map" style={{ width: '100%', height: '100%' }} className="w-full h-full" />;
 }
