@@ -13,13 +13,13 @@ export default function StatsSection({ loading, stats }: StatsSectionProps) {
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            { icon: 'store', label: 'UMKM Terdaftar', value: stats.totalUMKM, color: 'from-emerald-400 to-green-500', bgColor: 'from-emerald-50 to-green-50', darkBgColor: 'from-emerald-900/20 to-green-900/20' },
-            { icon: 'category', label: 'Kategori Usaha', value: stats.categories, color: 'from-green-400 to-teal-500', bgColor: 'from-green-50 to-teal-50', darkBgColor: 'from-green-900/20 to-teal-900/20' },
-            { icon: 'location_city', label: 'Wilayah Tercakup', value: stats.locations, color: 'from-teal-400 to-cyan-500', bgColor: 'from-teal-50 to-cyan-50', darkBgColor: 'from-teal-900/20 to-cyan-900/20' }
+            { icon: 'store', label: 'UMKM Terdaftar', value: stats.totalUMKM, color: 'from-emerald-400 to-green-500', bgColor: 'from-emerald-50 to-green-50' },
+            { icon: 'category', label: 'Kategori Usaha', value: stats.categories, color: 'from-green-400 to-teal-500', bgColor: 'from-green-50 to-teal-50' },
+            { icon: 'location_city', label: 'Wilayah Tercakup', value: stats.locations, color: 'from-teal-400 to-cyan-500', bgColor: 'from-teal-50 to-cyan-50' }
           ].map((stat, index) => (
             <div
               key={stat.label}
-              className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${stat.bgColor} dark:${stat.darkBgColor} border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 group`}
+              className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${stat.bgColor} dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 group`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Decorative circles */}

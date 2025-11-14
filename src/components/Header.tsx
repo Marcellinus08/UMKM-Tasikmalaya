@@ -75,22 +75,19 @@ export default function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center gap-2 group ${
+                  className={`relative px-4 py-2 font-medium text-sm transition-all duration-300 flex items-center gap-2 group ${
                     isActive
-                      ? 'text-white'
+                      ? 'text-emerald-600 dark:text-emerald-400'
                       : 'text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400'
                   }`}
                 >
-                  {isActive && (
-                    <span className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-500 rounded-lg"></span>
-                  )}
-                  <span className={`material-icons text-lg relative ${isActive ? 'text-white' : 'group-hover:scale-110'} transition-transform`}>
+                  <span className={`material-icons text-lg ${isActive ? '' : 'group-hover:scale-110'} transition-transform`}>
                     {item.icon}
                   </span>
-                  <span className="relative">{item.name}</span>
-                  {!isActive && (
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-green-500 group-hover:w-full transition-all duration-300"></span>
-                  )}
+                  <span>{item.name}</span>
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-emerald-500 to-green-500 transition-all duration-300 ${
+                    isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}></span>
                 </Link>
               );
             })}
