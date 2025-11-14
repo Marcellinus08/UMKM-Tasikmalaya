@@ -83,24 +83,24 @@ export default function CategoryPieChart({ categoryStats }: CategoryPieChartProp
             return (
               <div 
                 key={index} 
-                className="flex items-center gap-2 p-2 rounded-lg transition-all duration-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex items-center justify-between gap-2 p-2 rounded-lg transition-all duration-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
                 style={{
                   opacity: hoveredCategory && !isHovered ? 0.4 : 1
                 }}
                 onMouseEnter={() => setHoveredCategory(stat.category)}
                 onMouseLeave={() => setHoveredCategory(null)}
               >
-                <div 
-                  className="w-3 h-3 rounded-sm flex-shrink-0"
-                  style={{ backgroundColor: stat.color }}
-                ></div>
-                <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div 
+                    className="w-3 h-3 rounded-sm flex-shrink-0"
+                    style={{ backgroundColor: stat.color }}
+                  ></div>
                   <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
                     {stat.category}
                   </div>
-                  <div className="text-[10px] text-gray-500 dark:text-gray-400">
-                    {stat.count} UMKM
-                  </div>
+                </div>
+                <div className="text-xs font-semibold text-gray-600 dark:text-gray-400 flex-shrink-0">
+                  {stat.count}
                 </div>
               </div>
             );
