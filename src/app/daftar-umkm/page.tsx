@@ -28,6 +28,8 @@ export default function DaftarUMKM() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [umkms, setUmkms] = useState<UMKM[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   useEffect(() => {
     // Fetch data UMKM dari API database
@@ -68,6 +70,21 @@ export default function DaftarUMKM() {
     return result;
   }, [umkms, searchQuery, selectedCategory, sortBy]);
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, sortBy]);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredAndSortedUMKMs.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentUMKMs = filteredAndSortedUMKMs.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Fixed Green Blur Background Effects */}
@@ -99,9 +116,81 @@ export default function DaftarUMKM() {
           />
 
           {viewMode === 'grid' ? (
-            <UMKMGrid umkms={filteredAndSortedUMKMs} loading={loading} />
+            <UMKMGrid umkms={currentUMKMs} loading={loading} />
           ) : (
-            <UMKMList umkms={filteredAndSortedUMKMs} loading={loading} />
+            <UMKMList umkms={currentUMKMs} loading={loading} />
+          )}
+
+          {/* Pagination */}
+          {!loading && filteredAndSortedUMKMs.length > 0 && (
+            <div className="mt-12 flex flex-col items-center gap-6">
+              {/* Page Info */}
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                Menampilkan {startIndex + 1}-{Math.min(endIndex, filteredAndSortedUMKMs.length)} dari {filteredAndSortedUMKMs.length} UMKM
+              </div>
+
+              {/* Pagination Controls */}
+              <div className="flex items-center gap-2">
+                {/* Previous Button */}
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                >
+                  <span className="material-icons text-lg">chevron_left</span>
+                  <span className="hidden sm:inline"></span>
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // Show first page, last page, current page, and pages around current
+                    const showPage = 
+                      page === 1 || 
+                      page === totalPages || 
+                      (page >= currentPage - 1 && page <= currentPage + 1);
+                    
+                    // Show ellipsis
+                    const showEllipsisBefore = page === currentPage - 2 && currentPage > 3;
+                    const showEllipsisAfter = page === currentPage + 2 && currentPage < totalPages - 2;
+
+                    if (showEllipsisBefore || showEllipsisAfter) {
+                      return (
+                        <span key={page} className="px-2 text-gray-400 dark:text-gray-600">
+                          ...
+                        </span>
+                      );
+                    }
+
+                    if (!showPage) return null;
+
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`w-10 h-10 rounded-lg font-medium transition-all duration-300 ${
+                          currentPage === page
+                            ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg'
+                            : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                >
+                  <span className="hidden sm:inline"></span>
+                  <span className="material-icons text-lg">chevron_right</span>
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </main>
