@@ -38,6 +38,24 @@ export default function PetaUMKM() {
   const [loading, setLoading] = useState(true);
   const [selectedUMKM, setSelectedUMKM] = useState<UMKM | null>(null);
   const [mapStyle, setMapStyle] = useState('openstreetmap');
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [navigationTarget, setNavigationTarget] = useState<UMKM | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationAccuracy, setLocationAccuracy] = useState<number | null>(null);
+
+  // Calculate distance between two coordinates (Haversine formula)
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c; // Distance in km
+    return distance;
+  };
 
   useEffect(() => {
     // Fetch data UMKM dari API database
@@ -105,24 +123,6 @@ export default function PetaUMKM() {
               </select>
             </div>
 
-            {/* Map Style Dropdown */}
-            <div className="mb-2">
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Jenis Peta
-              </label>
-              <select
-                value={mapStyle}
-                onChange={(e) => setMapStyle(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-gray-900 dark:text-white"
-              >
-                <option value="openstreetmap">OpenStreetMap</option>
-                <option value="esri">Esri Street</option>
-                <option value="voyager">Voyager</option>
-                <option value="satellite">Satelit</option>
-                <option value="terrain">Terrain</option>
-              </select>
-            </div>
-
             {/* Results counter */}
             <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
               <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">
@@ -181,7 +181,121 @@ export default function PetaUMKM() {
 
         {/* Right Side - Fullscreen Map */}
         <div className="flex-1 h-full overflow-hidden relative">
-          <UMKMMap mapStyle={mapStyle} selectedCategory={selectedCategory} />
+          <UMKMMap 
+            mapStyle={mapStyle} 
+            selectedCategory={selectedCategory} 
+            selectedUMKM={selectedUMKM}
+            onNavigationChange={(isNav, target) => {
+              setIsNavigating(isNav);
+              setNavigationTarget(target);
+            }}
+            onUserLocationChange={(location, accuracy) => {
+              setUserLocation(location);
+              setLocationAccuracy(accuracy);
+            }}
+          />
+
+          {/* Navigation Info - Top Right */}
+          {isNavigating && navigationTarget && (
+            <div className="absolute top-4 right-4 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-2xl max-w-sm backdrop-blur-sm">
+              <div className="space-y-3">
+                {/* User Location Info */}
+                {userLocation && (
+                  <div className="flex items-start gap-3 pb-3 border-b border-gray-100 dark:border-gray-700">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <span className="material-icons text-white text-lg">my_location</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">
+                        Lokasi Anda
+                      </h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 font-mono">
+                        {userLocation.lat.toFixed(6)}, {userLocation.lng.toFixed(6)}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Navigation Target Info */}
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <span className="material-icons text-white text-lg">place</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">
+                      Tujuan Navigasi
+                    </h3>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white mb-1 line-clamp-2">
+                      {navigationTarget.name}
+                    </p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mb-2">
+                      {navigationTarget.address}
+                    </p>
+                    {userLocation && (
+                      <div className="flex items-center gap-1.5 text-xs bg-gray-50 dark:bg-gray-900 px-2 py-1.5 rounded-lg">
+                        <span className="material-icons text-gray-500 dark:text-gray-400" style={{ fontSize: '14px' }}>near_me</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">
+                          {(() => {
+                            const distance = calculateDistance(
+                              userLocation.lat,
+                              userLocation.lng,
+                              navigationTarget.lat,
+                              navigationTarget.lng
+                            );
+                            return distance < 1 
+                              ? `${(distance * 1000).toFixed(0)} meter`
+                              : `${distance.toFixed(2)} km`;
+                          })()}
+                        </span>
+                        <span className="text-gray-500 dark:text-gray-400">dari lokasi Anda</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2 pt-2">
+                  <button
+                    onClick={() => {
+                      setIsNavigating(false);
+                      setNavigationTarget(null);
+                      if ((window as any).stopNavigation) {
+                        (window as any).stopNavigation();
+                      }
+                    }}
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg text-sm font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  >
+                    <span className="material-icons text-lg">cancel</span>
+                    Stop Navigasi
+                  </button>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${navigationTarget.lat},${navigationTarget.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded-lg text-sm font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-1.5"
+                    title="Buka di Google Maps"
+                  >
+                    <span className="material-icons text-lg">map</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Map Style Dropdown - Bottom Left */}
+          <div className="absolute bottom-4 left-4 z-10">
+            <select
+              value={mapStyle}
+              onChange={(e) => setMapStyle(e.target.value)}
+              className="px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-gray-900 dark:text-white shadow-lg cursor-pointer"
+            >
+              <option value="openstreetmap">🗺️ OpenStreetMap</option>
+              <option value="esri">🌍 Esri Street</option>
+              <option value="voyager">🧭 Voyager</option>
+              <option value="satellite">🛰️ Satelit</option>
+              <option value="terrain">⛰️ Terrain</option>
+            </select>
+          </div>
 
           {/* Selected UMKM Detail Card */}
           {selectedUMKM && (

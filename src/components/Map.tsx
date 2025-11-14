@@ -44,9 +44,12 @@ export interface MapProps {
   isDark: boolean;
   category: string;
   mapStyle: string;
+  selectedUMKM?: UMKM | null;
+  onNavigationChange?: (isNavigating: boolean, targetUMKM: UMKM | null) => void;
+  onUserLocationChange?: (location: { lat: number; lng: number } | null, accuracy: number | null) => void;
 }
 
-export default function Map({ isDark, category, mapStyle }: MapProps) {
+export default function Map({ isDark, category, mapStyle, selectedUMKM, onNavigationChange, onUserLocationChange }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const layerGroupRef = useRef<L.LayerGroup | null>(null);
   const [umkms, setUmkms] = useState<UMKM[]>([]);
@@ -55,6 +58,8 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
   const [locationAccuracy, setLocationAccuracy] = useState<number | null>(null);
   const userMarkerRef = useRef<L.Marker | null>(null);
   const routeLayerRef = useRef<L.Polyline | null>(null);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [navigationTarget, setNavigationTarget] = useState<{ lat: number; lng: number } | null>(null);
 
   // Fetch UMKM data from API
   useEffect(() => {
@@ -79,11 +84,14 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
           const userLng = position.coords.longitude;
           const accuracy = position.coords.accuracy;
           
-          setUserLocation({
-            lat: userLat,
-            lng: userLng
-          });
+          const location = { lat: userLat, lng: userLng };
+          setUserLocation(location);
           setLocationAccuracy(accuracy);
+          
+          // Notify parent component
+          if (onUserLocationChange) {
+            onUserLocationChange(location, accuracy);
+          }
         },
         (error) => {
           console.error('GPS Error:', error.message);
@@ -106,11 +114,14 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
           const userLng = position.coords.longitude;
           const accuracy = position.coords.accuracy;
           
-          setUserLocation({
-            lat: userLat,
-            lng: userLng
-          });
+          const location = { lat: userLat, lng: userLng };
+          setUserLocation(location);
           setLocationAccuracy(accuracy);
+          
+          // Notify parent component
+          if (onUserLocationChange) {
+            onUserLocationChange(location, accuracy);
+          }
         },
         (error) => {
           console.error('GPS watch error:', error.message);
@@ -297,20 +308,58 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
     const userMarker = L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
       .addTo(mapRef.current)
       .bindPopup(`
-        <div style="text-align: center; min-width: 200px;">
-          <strong style="color: #3B82F6; font-size: 14px;">📍 Lokasi GPS Anda</strong>
-          <div style="margin-top: 8px; font-size: 12px; color: #666;">
-            <div>Lat: ${userLocation.lat.toFixed(6)}</div>
-            <div>Lng: ${userLocation.lng.toFixed(6)}</div>
-            ${locationAccuracy ? `<div style="color: #10B981; margin-top: 4px;">🎯 Akurasi: ~${Math.round(locationAccuracy)}m</div>` : ''}
+        <div style="
+          min-width: 220px;
+          padding: 12px;
+          background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          border: 1px solid #e2e8f0;
+        ">
+          <!-- Header -->
+          <div style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+          ">
+            <div style="
+              width: 28px;
+              height: 28px;
+              background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            ">
+              <span style="font-size: 14px;">📍</span>
+            </div>
+            <div style="
+              font-size: 13px;
+              font-weight: 700;
+              color: #1e293b;
+            ">Lokasi GPS Anda</div>
           </div>
-          <a href="https://www.google.com/maps?q=${userLocation.lat},${userLocation.lng}" 
-             target="_blank" 
-             style="display: inline-block; margin-top: 8px; padding: 4px 8px; background: #10B981; color: white; text-decoration: none; border-radius: 4px; font-size: 11px;">
-            📍 Cek di Google Maps
-          </a>
+          
+          <!-- Coordinates -->
+          <div style="
+            background: #f1f5f9;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.6;
+          ">
+            <div>Lat: <strong style="color: #1e293b;">${userLocation.lat.toFixed(6)}</strong></div>
+            <div>Lng: <strong style="color: #1e293b;">${userLocation.lng.toFixed(6)}</strong></div>
+          </div>
         </div>
-      `);
+      `, {
+        maxWidth: 250,
+        className: 'custom-user-popup'
+      });
 
     userMarkerRef.current = userMarker;
   }, [userLocation, mapStyle, locationAccuracy]);
@@ -322,6 +371,18 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
     const showRoute = async (toLat: number, toLng: number) => {
       if (!userLocation || !mapRef.current) {
         return;
+      }
+
+      // Find the target UMKM
+      const targetUMKM = umkms.find(u => u.lat === toLat && u.lng === toLng);
+
+      // Set navigation state
+      setIsNavigating(true);
+      setNavigationTarget({ lat: toLat, lng: toLng });
+      
+      // Notify parent component
+      if (onNavigationChange && targetUMKM) {
+        onNavigationChange(true, targetUMKM);
       }
 
       // Remove existing route if any
@@ -395,11 +456,25 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
     };
 
     const buildPopup = (item: UMKM) => {
-      const gmaps = `https://www.google.com/maps/dir/?api=1&origin=${userLocation?.lat || ''},${userLocation?.lng || ''}&destination=${item.lat},${item.lng}`;
-      
       // Make showRoute globally available
       (window as any).navigateToUMKM = (lat: number, lng: number) => {
         showRoute(lat, lng);
+      };
+
+      // Make stopNavigation globally available
+      (window as any).stopNavigation = () => {
+        setIsNavigating(false);
+        setNavigationTarget(null);
+        
+        // Notify parent component
+        if (onNavigationChange) {
+          onNavigationChange(false, null);
+        }
+        
+        if (routeLayerRef.current && mapRef.current?.hasLayer(routeLayerRef.current)) {
+          mapRef.current.removeLayer(routeLayerRef.current);
+          routeLayerRef.current = null;
+        }
       };
 
       return `
@@ -407,24 +482,34 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
           <div class="font-semibold">${item.name}</div>
           <div class="text-xs inline-block px-2 py-0.5 rounded-full" style="background:${CAT_COLOR[item.category]||'#ccc'}20;color:${CAT_COLOR[item.category]||'#333'}">${item.category}</div>
           <div class="text-sm text-gray-700">${item.address}</div>
-          <div class="text-sm"><span style="color: #F97316;">�</span> ${item.phone}</div>
+          <div class="text-sm"><span style="color: #F97316;">📞</span> ${item.phone}</div>
           <div class="pt-2 flex gap-2">
-            ${userLocation ? `
-              <button onclick="window.navigateToUMKM(${item.lat}, ${item.lng})" style="background: #3B82F6; color: white; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px;">
-                📍 Navigasi
+            ${userLocation && !isNavigating ? `
+              <button onclick="window.navigateToUMKM(${item.lat}, ${item.lng})" style="background: #3B82F6; color: white; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; width: 100%;">
+                📍 Mulai Navigasi
               </button>
             ` : ''}
-            <a href="${gmaps}" target="_blank" rel="noopener" style="background: #10B981; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 12px;">
-              🗺️ Google Maps
-            </a>
+            ${isNavigating ? `
+              <button onclick="window.stopNavigation()" style="background: #EF4444; color: white; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; width: 100%;">
+                ⛔ Stop Navigasi
+              </button>
+            ` : ''}
           </div>
         </div>`;
     };
 
-    // Filter markers based on category OR selectedLocation
+    // Filter markers based on isNavigating OR selectedUMKM OR selectedLocation OR category
     let filteredItems: UMKM[];
     
-    if (selectedLocation) {
+    if (isNavigating && navigationTarget) {
+      // If navigating, show only the destination UMKM
+      filteredItems = umkms.filter((item: UMKM) => 
+        item.lat === navigationTarget.lat && item.lng === navigationTarget.lng
+      );
+    } else if (selectedUMKM) {
+      // If a UMKM is selected from sidebar, show only that UMKM
+      filteredItems = [selectedUMKM];
+    } else if (selectedLocation) {
       // If a location is selected, show only that UMKM
       filteredItems = umkms.filter((item: UMKM) => 
         item.lat === selectedLocation.lat && item.lng === selectedLocation.lng
@@ -493,9 +578,11 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
     });
 
     if (filteredItems.length && mapRef.current) {
-      if (selectedLocation) {
-        // Zoom in to selected location
-        mapRef.current.setView([selectedLocation.lat, selectedLocation.lng], 16);
+      if (selectedUMKM || selectedLocation) {
+        // Zoom in to selected UMKM or location
+        const targetLat = selectedUMKM?.lat || selectedLocation!.lat;
+        const targetLng = selectedUMKM?.lng || selectedLocation!.lng;
+        mapRef.current.setView([targetLat, targetLng], 16);
         // Open popup for selected marker
         const firstMarker = markers[0];
         if (firstMarker) {
@@ -507,7 +594,7 @@ export default function Map({ isDark, category, mapStyle }: MapProps) {
         mapRef.current.fitBounds(bounds.pad(0.1), { maxZoom: 14 });
       }
     }
-  }, [category, umkms, selectedLocation, isDark, mapStyle, userLocation]);
+  }, [category, umkms, selectedLocation, isDark, mapStyle, userLocation, selectedUMKM, isNavigating, navigationTarget]);
 
   return <div id="map" style={{ width: '100%', height: '100%' }} className="w-full h-full" />;
 }

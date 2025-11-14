@@ -28,9 +28,12 @@ const MapComponent = dynamic<MapProps>(() => import("@/components/Map"), {
 interface UMKMMapProps {
   mapStyle?: string;
   selectedCategory?: string;
+  selectedUMKM?: UMKM | null;
+  onNavigationChange?: (isNavigating: boolean, targetUMKM: UMKM | null) => void;
+  onUserLocationChange?: (location: { lat: number; lng: number } | null, accuracy: number | null) => void;
 }
 
-export default function UMKMMap({ mapStyle = "openstreetmap", selectedCategory = "Semua" }: UMKMMapProps) {
+export default function UMKMMap({ mapStyle = "openstreetmap", selectedCategory = "Semua", selectedUMKM = null, onNavigationChange, onUserLocationChange }: UMKMMapProps) {
   const [category, setCategory] = useState(selectedCategory);
   const [isDark, setIsDark] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
@@ -89,7 +92,7 @@ export default function UMKMMap({ mapStyle = "openstreetmap", selectedCategory =
 
   return (
     <div className="w-full h-full">
-      <MapComponent isDark={isDark} category={category} mapStyle={currentMapStyle} />
+      <MapComponent isDark={isDark} category={category} mapStyle={currentMapStyle} selectedUMKM={selectedUMKM} onNavigationChange={onNavigationChange} onUserLocationChange={onUserLocationChange} />
     </div>
   );
 }
