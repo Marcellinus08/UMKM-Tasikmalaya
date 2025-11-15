@@ -24,7 +24,20 @@ export default function CategoryPieChart({ categoryStats }: CategoryPieChartProp
       <div className="flex flex-col gap-6 items-center">
         {/* Compact Pie Chart - Top */}
         <div className="relative flex items-center justify-center">
-          <svg viewBox="0 0 200 200" className="w-56 h-56">
+          {/* Background glow effect using CSS */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-56 h-56 rounded-full bg-gradient-to-r from-emerald-500/20 via-green-500/20 to-teal-500/20 blur-2xl animate-pulse"></div>
+          </div>
+          
+          {/* Rotating glow rings */}
+          <div className="absolute inset-0 flex items-center justify-center animate-spin-slow">
+            <div className="w-60 h-60 rounded-full border-2 border-emerald-400/30 blur-sm"></div>
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center animate-spin-reverse">
+            <div className="w-64 h-64 rounded-full border border-green-400/20 blur-md"></div>
+          </div>
+          
+          <svg viewBox="0 0 200 200" className="w-56 h-56 relative z-10 drop-shadow-2xl">
             {(() => {
               let currentAngle = 0;
               return categoryStats.map((stat, index) => {
