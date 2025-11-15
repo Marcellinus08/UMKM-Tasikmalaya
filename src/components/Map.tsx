@@ -47,9 +47,10 @@ export interface MapProps {
   selectedUMKM?: UMKM | null;
   onNavigationChange?: (isNavigating: boolean, targetUMKM: UMKM | null) => void;
   onUserLocationChange?: (location: { lat: number; lng: number } | null, accuracy: number | null) => void;
+  onActiveNavigationChange?: (isActive: boolean) => void;
 }
 
-export default function Map({ isDark, category, mapStyle, selectedUMKM, onNavigationChange, onUserLocationChange }: MapProps) {
+export default function Map({ isDark, category, mapStyle, selectedUMKM, onNavigationChange, onUserLocationChange, onActiveNavigationChange }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const layerGroupRef = useRef<L.LayerGroup | null>(null);
   const [umkms, setUmkms] = useState<UMKM[]>([]);
@@ -60,6 +61,8 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
   const routeLayerRef = useRef<L.Polyline | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
   const [navigationTarget, setNavigationTarget] = useState<{ lat: number; lng: number } | null>(null);
+  const [isDestinationSet, setIsDestinationSet] = useState(false);
+  const [isActiveNavigation, setIsActiveNavigation] = useState(false);
 
   // Fetch UMKM data from API
   useEffect(() => {
@@ -223,8 +226,10 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
     (mapRef.current as any).lightTiles = lightTiles;
     (mapRef.current as any).darkTiles = darkTiles;
 
-    // Fit map to bounds immediately
-    mapRef.current.fitBounds(bounds.pad(0.1), { maxZoom: 14 });
+    // Calculate center point from bounds for initial view
+    const center = bounds.getCenter();
+    // Set initial view with high zoom level (shift up slightly)
+    mapRef.current.setView([center.lat + 0.02, center.lng], 13);
 
     // Invalidate size after a short delay to ensure proper rendering
     setTimeout(() => {
@@ -309,56 +314,76 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
       .addTo(mapRef.current)
       .bindPopup(`
         <div style="
-          padding: 12px;
-          background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          border: 1px solid #e2e8f0;
-          text-align: center;
+          padding: 0;
+          background: transparent;
         ">
           <div style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 10px;
+            padding: 10px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            text-align: center;
           ">
             <div style="
-              width: 28px;
-              height: 28px;
-              background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-              border-radius: 50%;
               display: flex;
               align-items: center;
               justify-content: center;
-              box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+              gap: 6px;
+              margin-bottom: 8px;
             ">
-              <span style="font-size: 14px;">📍</span>
+              <div style="
+                width: 28px;
+                height: 28px;
+                background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+              ">
+                <span style="
+                  font-family: 'Material Icons';
+                  font-size: 16px;
+                  color: white;
+                ">my_location</span>
+              </div>
+              <div style="
+                font-size: 11px;
+                font-weight: 600;
+                color: #1e293b;
+              ">Lokasi GPS Anda</div>
             </div>
+            
             <div style="
-              font-size: 13px;
-              font-weight: 700;
-              color: #1e293b;
-            ">Lokasi GPS Anda</div>
-          </div>
-          
-          <div style="
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            color: #475569;
-            line-height: 1.8;
-          ">
-            <div>Lat: <strong style="color: #1e293b;">${userLocation.lat.toFixed(6)}</strong></div>
-            <div>Lng: <strong style="color: #1e293b;">${userLocation.lng.toFixed(6)}</strong></div>
+              font-family: 'Courier New', monospace;
+              font-size: 10px;
+              color: #475569;
+              line-height: 1.6;
+            ">
+              <div>Lat: <strong style="color: #1e293b;">${userLocation.lat.toFixed(6)}</strong></div>
+              <div>Lng: <strong style="color: #1e293b;">${userLocation.lng.toFixed(6)}</strong></div>
+            </div>
           </div>
         </div>
       `, {
-        maxWidth: 250,
+        maxWidth: 220,
         className: 'custom-user-popup'
       });
 
     userMarkerRef.current = userMarker;
   }, [userLocation, mapStyle, locationAccuracy]);
+
+  // Auto-follow user location when active navigation is enabled
+  useEffect(() => {
+    if (!mapRef.current || !userLocation || !isActiveNavigation) return;
+    
+    // Smoothly pan to user location
+    mapRef.current.setView([userLocation.lat, userLocation.lng], 17, {
+      animate: true,
+      duration: 0.5
+    });
+  }, [userLocation, isActiveNavigation]);
 
   // Update markers when category or data changes
   useEffect(() => {
@@ -372,7 +397,8 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
       // Find the target UMKM
       const targetUMKM = umkms.find(u => u.lat === toLat && u.lng === toLng);
 
-      // Set navigation state
+      // Stage 1: Set Destination (show route and info, don't focus to user yet)
+      setIsDestinationSet(true);
       setIsNavigating(true);
       setNavigationTarget({ lat: toLat, lng: toLng });
       
@@ -389,14 +415,6 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
       // Make sure user marker is visible (re-add if needed)
       if (userMarkerRef.current && !mapRef.current.hasLayer(userMarkerRef.current)) {
         userMarkerRef.current.addTo(mapRef.current);
-      }
-
-      // Highlight user marker temporarily
-      if (userMarkerRef.current) {
-        userMarkerRef.current.openPopup();
-        setTimeout(() => {
-          userMarkerRef.current?.closePopup();
-        }, 2000);
       }
 
       try {
@@ -421,7 +439,7 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
 
           routeLayerRef.current = route;
 
-          // Fit bounds to show the route
+          // Fit bounds to show the route (both user and destination)
           mapRef.current.fitBounds(route.getBounds(), { padding: [50, 50] });
         } else {
           throw new Error('Rute tidak ditemukan');
@@ -451,8 +469,36 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
       }
     };
 
+    // Stage 2: Start Active Navigation (focus to user location with tracking)
+    const startActiveNavigation = () => {
+      if (!userLocation || !mapRef.current) return;
+      
+      setIsActiveNavigation(true);
+      
+      // Notify parent component
+      if (onActiveNavigationChange) {
+        onActiveNavigationChange(true);
+      }
+      
+      // Focus map to user location
+      mapRef.current.setView([userLocation.lat, userLocation.lng], 17, {
+        animate: true,
+        duration: 1
+      });
+      
+      // Open user marker popup and auto-close after 2 seconds
+      if (userMarkerRef.current) {
+        userMarkerRef.current.openPopup();
+        setTimeout(() => {
+          if (userMarkerRef.current) {
+            userMarkerRef.current.closePopup();
+          }
+        }, 2000);
+      }
+    };
+
     const buildPopup = (item: UMKM) => {
-      // Make showRoute globally available
+      // Make showRoute globally available (Stage 1: Set Destination)
       (window as any).navigateToUMKM = (lat: number, lng: number) => {
         showRoute(lat, lng);
       };
@@ -461,10 +507,16 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
       (window as any).stopNavigation = () => {
         setIsNavigating(false);
         setNavigationTarget(null);
+        setIsDestinationSet(false);
+        setIsActiveNavigation(false);
         
         // Notify parent component
         if (onNavigationChange) {
           onNavigationChange(false, null);
+        }
+        
+        if (onActiveNavigationChange) {
+          onActiveNavigationChange(false);
         }
         
         if (routeLayerRef.current && mapRef.current?.hasLayer(routeLayerRef.current)) {
@@ -473,25 +525,138 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
         }
       };
 
+      // Make startActiveNavigation globally available
+      (window as any).startActiveNavigation = () => {
+        startActiveNavigation();
+      };
+
       return `
-        <div class="space-y-1">
-          <div class="font-semibold">${item.name}</div>
-          <div class="text-xs inline-block px-2 py-0.5 rounded-full" style="background:${CAT_COLOR[item.category]||'#ccc'}20;color:${CAT_COLOR[item.category]||'#333'}">${item.category}</div>
-          <div class="text-sm text-gray-700">${item.address}</div>
-          <div class="text-sm"><span style="color: #F97316;">📞</span> ${item.phone}</div>
-          <div class="pt-2 flex gap-2">
-            ${userLocation && !isNavigating ? `
-              <button onclick="window.navigateToUMKM(${item.lat}, ${item.lng})" style="background: #3B82F6; color: white; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; width: 100%;">
-                📍 Mulai Navigasi
-              </button>
-            ` : ''}
-            ${isNavigating ? `
-              <button onclick="window.stopNavigation()" style="background: #EF4444; color: white; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; width: 100%;">
-                ⛔ Stop Navigasi
-              </button>
-            ` : ''}
+        <div style="
+          min-width: 280px;
+          padding: 0;
+          background: transparent;
+        ">
+          <div style="
+            padding: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+          ">
+            <!-- Header with Name and Category -->
+            <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1.5px solid #e2e8f0;">
+              <h3 style="
+                font-size: 14px;
+                font-weight: 600;
+                color: #1e293b;
+                margin: 0 0 6px 0;
+                line-height: 1.3;
+              ">${item.name}</h3>
+              <div style="
+                display: inline-block;
+                padding: 3px 8px;
+                border-radius: 4px;
+                background: ${CAT_COLOR[item.category]||'#ccc'}20;
+                border: 1px solid ${CAT_COLOR[item.category]||'#ccc'}40;
+              ">
+                <span style="
+                  font-size: 10px;
+                  font-weight: 600;
+                  color: ${CAT_COLOR[item.category]||'#333'};
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                ">${item.category}</span>
+              </div>
+            </div>
+            
+            <!-- Info Section -->
+            <div style="margin-bottom: 10px;">
+              <!-- Address -->
+              <div style="
+                display: flex;
+                gap: 6px;
+                align-items: start;
+                padding: 6px;
+                background: #f1f5f9;
+                border-radius: 4px;
+                margin-bottom: 5px;
+              ">
+                <span style="font-size: 14px; flex-shrink: 0;">📍</span>
+                <span style="
+                  font-size: 10px;
+                  color: #475569;
+                  line-height: 1.5;
+                ">${item.address}</span>
+              </div>
+              
+              <!-- Operating Hours -->
+              <div style="
+                display: flex;
+                gap: 6px;
+                align-items: center;
+                padding: 6px;
+                background: #f1f5f9;
+                border-radius: 4px;
+              ">
+                <span style="font-size: 14px;">🕒</span>
+                <span style="
+                  font-size: 10px;
+                  font-weight: 600;
+                  color: #1e293b;
+                ">${item.operatingHours}</span>
+              </div>
+            </div>
+            
+            <!-- Action Button -->
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e2e8f0;">
+              ${userLocation && !isNavigating ? `
+                <button onclick="window.navigateToUMKM(${item.lat}, ${item.lng})" style="
+                  width: 100%;
+                  padding: 8px 12px;
+                  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+                  color: white;
+                  border: none;
+                  border-radius: 6px;
+                  cursor: pointer;
+                  font-size: 11px;
+                  font-weight: 600;
+                  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+                  transition: all 0.2s;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 5px;
+                " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.35)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(16, 185, 129, 0.25)';">
+                  <span style="font-size: 16px;">🎯</span>
+                  <span>Set Tujuan</span>
+                </button>
+              ` : ''}
+              ${isNavigating ? `
+                <button onclick="window.stopNavigation()" style="
+                  width: 100%;
+                  padding: 10px 16px;
+                  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  cursor: pointer;
+                  font-size: 13px;
+                  font-weight: 700;
+                  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+                  transition: all 0.2s;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 6px;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(239, 68, 68, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.3)';">
+                  <span style="font-size: 18px;">⛔</span>
+                  <span>Stop Navigasi</span>
+                </button>
+              ` : ''}
+            </div>
           </div>
-        </div>`;
+        </div>
+      `;
     };
 
     // Filter markers based on isNavigating OR selectedUMKM OR selectedLocation OR category
@@ -567,27 +732,39 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
       
       const marker = L.marker([item.lat, item.lng], { icon: customIcon });
 
-      marker.bindPopup(buildPopup(item));
+      marker.bindPopup(buildPopup(item), {
+        className: 'custom-popup',
+        maxWidth: 350,
+        minWidth: 320
+      });
       
       marker.addTo(layerGroupRef.current!);
       markers.push(marker as any);
     });
 
     if (filteredItems.length && mapRef.current) {
+      // Don't change view if navigating (destination already set)
+      if (isNavigating) {
+        // During navigation, don't auto-adjust the view
+        // Let the navigation functions (showRoute, startActiveNavigation) handle the view
+        return;
+      }
+      
       if (selectedUMKM || selectedLocation) {
-        // Zoom in to selected UMKM or location
+        // Zoom in to selected UMKM or location (only when not navigating) with high zoom
         const targetLat = selectedUMKM?.lat || selectedLocation!.lat;
         const targetLng = selectedUMKM?.lng || selectedLocation!.lng;
-        mapRef.current.setView([targetLat, targetLng], 16);
+        mapRef.current.setView([targetLat, targetLng], 18);
         // Open popup for selected marker
         const firstMarker = markers[0];
         if (firstMarker) {
           setTimeout(() => firstMarker.openPopup(), 300);
         }
       } else {
-        // Show all markers with bounds
+        // Show all markers - use center view with fixed zoom (shift up slightly)
         const bounds = L.featureGroup(markers).getBounds();
-        mapRef.current.fitBounds(bounds.pad(0.1), { maxZoom: 14 });
+        const center = bounds.getCenter();
+        mapRef.current.setView([center.lat + 0.02, center.lng], 13);
       }
     }
   }, [category, umkms, selectedLocation, isDark, mapStyle, userLocation, selectedUMKM, isNavigating, navigationTarget]);

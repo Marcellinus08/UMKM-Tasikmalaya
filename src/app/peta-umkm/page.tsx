@@ -42,6 +42,7 @@ export default function PetaUMKM() {
   const [navigationTarget, setNavigationTarget] = useState<UMKM | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationAccuracy, setLocationAccuracy] = useState<number | null>(null);
+  const [isActiveNavigation, setIsActiveNavigation] = useState(false);
 
   // Calculate distance between two coordinates (Haversine formula)
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -77,8 +78,7 @@ export default function PetaUMKM() {
   const categories = ['Semua', ...Array.from(new Set(umkms.map(u => u.category)))];
 
   const filteredUMKMs = umkms.filter(umkm => {
-    const matchesSearch = umkm.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         umkm.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = umkm.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'Semua' || umkm.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -154,10 +154,7 @@ export default function PetaUMKM() {
                     <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-0.5 truncate">
                       {umkm.name}
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 line-clamp-1 leading-tight">
-                      {umkm.description}
-                    </p>
-                    <div className="flex items-center gap-2 text-xs">
+                    <div className="flex items-center gap-2 text-xs mt-1">
                       <span
                         className="px-1.5 py-0.5 rounded font-medium text-[10px]"
                         style={{ 
@@ -193,23 +190,26 @@ export default function PetaUMKM() {
               setUserLocation(location);
               setLocationAccuracy(accuracy);
             }}
+            onActiveNavigationChange={(isActive) => {
+              setIsActiveNavigation(isActive);
+            }}
           />
 
           {/* Navigation Info - Top Right */}
           {isNavigating && navigationTarget && (
-            <div className="absolute top-4 right-4 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-2xl max-w-sm backdrop-blur-sm">
-              <div className="space-y-3">
+            <div className="absolute top-4 right-4 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-xl max-w-xs backdrop-blur-sm">
+              <div className="space-y-2">
                 {/* User Location Info */}
                 {userLocation && (
-                  <div className="flex items-start gap-3 pb-3 border-b border-gray-100 dark:border-gray-700">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <span className="material-icons text-white text-lg">my_location</span>
+                  <div className="flex items-start gap-2 pb-2 border-b border-gray-100 dark:border-gray-700">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow">
+                      <span className="material-icons text-white text-base">my_location</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">
+                      <h3 className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
                         Lokasi Anda
                       </h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 font-mono">
+                      <p className="text-[10px] text-gray-600 dark:text-gray-400 font-mono">
                         {userLocation.lat.toFixed(6)}, {userLocation.lng.toFixed(6)}
                       </p>
                     </div>
@@ -217,23 +217,23 @@ export default function PetaUMKM() {
                 )}
 
                 {/* Navigation Target Info */}
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <span className="material-icons text-white text-lg">place</span>
+                <div className="flex items-start gap-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow">
+                    <span className="material-icons text-white text-base">place</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">
+                    <h3 className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
                       Tujuan Navigasi
                     </h3>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white mb-1 line-clamp-2">
+                    <p className="text-xs font-bold text-gray-900 dark:text-white mb-1 line-clamp-1">
                       {navigationTarget.name}
                     </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mb-2">
+                    <p className="text-[10px] text-gray-600 dark:text-gray-400 line-clamp-1 mb-1.5">
                       {navigationTarget.address}
                     </p>
                     {userLocation && (
-                      <div className="flex items-center gap-1.5 text-xs bg-gray-50 dark:bg-gray-900 px-2 py-1.5 rounded-lg">
-                        <span className="material-icons text-gray-500 dark:text-gray-400" style={{ fontSize: '14px' }}>near_me</span>
+                      <div className="flex items-center gap-1 text-[10px] bg-gray-50 dark:bg-gray-900 px-1.5 py-1 rounded">
+                        <span className="material-icons text-gray-500 dark:text-gray-400" style={{ fontSize: '12px' }}>near_me</span>
                         <span className="font-semibold text-gray-900 dark:text-white">
                           {(() => {
                             const distance = calculateDistance(
@@ -247,35 +247,55 @@ export default function PetaUMKM() {
                               : `${distance.toFixed(2)} km`;
                           })()}
                         </span>
-                        <span className="text-gray-500 dark:text-gray-400">dari lokasi Anda</span>
+                        <span className="text-gray-500 dark:text-gray-400">dari Anda</span>
                       </div>
                     )}
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-1 pt-2">
+                  {/* Mulai Navigasi Button - Only show when destination is set but navigation not active */}
+                  {!isActiveNavigation && (
+                    <button
+                      onClick={() => {
+                        setIsActiveNavigation(true);
+                        if ((window as any).startActiveNavigation) {
+                          (window as any).startActiveNavigation();
+                        }
+                      }}
+                      className="flex-1 px-2 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded text-[11px] font-semibold transition-all hover:shadow-md flex items-center justify-center gap-1"
+                    >
+                      <span className="material-icons" style={{ fontSize: '14px' }}>navigation</span>
+                      Mulai
+                    </button>
+                  )}
+                  
+                  {/* Stop Button */}
                   <button
                     onClick={() => {
                       setIsNavigating(false);
                       setNavigationTarget(null);
+                      setIsActiveNavigation(false);
                       if ((window as any).stopNavigation) {
                         (window as any).stopNavigation();
                       }
                     }}
-                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg text-sm font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                    className={`px-2 py-1.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded text-[11px] font-medium transition-all hover:shadow-md flex items-center justify-center gap-1 ${isActiveNavigation ? 'flex-1' : ''}`}
                   >
-                    <span className="material-icons text-lg">cancel</span>
-                    Stop Navigasi
+                    <span className="material-icons" style={{ fontSize: '14px' }}>close</span>
+                    Batal
                   </button>
+                  
+                  {/* Google Maps Button */}
                   <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${navigationTarget.lat},${navigationTarget.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded-lg text-sm font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-1.5"
+                    className="px-2 py-1.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded transition-all hover:shadow-md flex items-center justify-center"
                     title="Buka di Google Maps"
                   >
-                    <span className="material-icons text-lg">map</span>
+                    <span className="material-icons" style={{ fontSize: '14px' }}>map</span>
                   </a>
                 </div>
               </div>
@@ -302,12 +322,9 @@ export default function PetaUMKM() {
             <div className="absolute bottom-4 left-4 right-4 bg-white/98 dark:bg-gray-800/98 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-2xl">
               <div className="flex items-start gap-3">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-base text-gray-900 dark:text-white mb-1 truncate">
+                  <h3 className="font-bold text-base text-gray-900 dark:text-white mb-2 truncate">
                     {selectedUMKM.name}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-1">
-                    {selectedUMKM.description}
-                  </p>
                   <div className="space-y-1 text-sm">
                     <div className="flex items-start gap-1.5 text-gray-600 dark:text-gray-400">
                       <span className="material-icons text-sm">location_on</span>

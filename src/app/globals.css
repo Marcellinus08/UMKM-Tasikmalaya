@@ -193,6 +193,41 @@
   .custom-pin-marker:hover .pin-pulse-2 {
     animation-duration: 1s;
   }
+
+  /* Custom popup styles - Remove default Leaflet background */
+  .leaflet-popup-content-wrapper {
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .leaflet-popup-content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .leaflet-popup-tip-container {
+    display: none !important;
+  }
+
+  .custom-popup .leaflet-popup-content-wrapper,
+  .custom-user-popup .leaflet-popup-content-wrapper {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .custom-popup .leaflet-popup-content,
+  .custom-user-popup .leaflet-popup-content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .custom-popup .leaflet-popup-tip-container,
+  .custom-user-popup .leaflet-popup-tip-container {
+    display: none !important;
+  }
 }
 
 @layer components {

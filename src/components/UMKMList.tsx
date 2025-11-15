@@ -173,15 +173,7 @@ export default function UMKMList({ onLocationSelect }: UMKMListProps) {
                 <span className="material-icons text-primary-500 mr-2 group-hover/item:scale-110 transition-transform">
                   location_on
                 </span>
-                <span className="group-hover/item:text-primary-500 transition-colors">{umkm.address}</span>
-              </div>
-              <div className="flex items-center group/item">
-                <span className="material-icons text-primary-500 mr-2 group-hover/item:scale-110 transition-transform">
-                  schedule
-                </span>
-                <span className="group-hover/item:text-primary-500 transition-colors">
-                  {umkm.phone}
-                </span>
+                <span className="group-hover/item:text-primary-500 transition-colors">{umkm.district}</span>
               </div>
             </div>
             <div className="mt-5 flex gap-3">

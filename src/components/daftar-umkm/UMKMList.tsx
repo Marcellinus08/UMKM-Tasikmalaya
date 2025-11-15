@@ -72,10 +72,6 @@ export default function UMKMList({ umkms, loading }: UMKMListProps) {
                     </div>
                   </div>
                   
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                    {umkm.description}
-                  </p>
-                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
                       <span className="material-icons text-sm text-indigo-500 mt-0.5">location_on</span>

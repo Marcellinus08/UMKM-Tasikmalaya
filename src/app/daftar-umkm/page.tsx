@@ -53,7 +53,6 @@ export default function DaftarUMKM() {
   const filteredAndSortedUMKMs = useMemo(() => {
     let result = umkms.filter(umkm => {
       const matchesSearch = umkm.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           umkm.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            umkm.address.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'Semua' || umkm.category === selectedCategory;
       return matchesSearch && matchesCategory;

@@ -31,9 +31,10 @@ interface UMKMMapProps {
   selectedUMKM?: UMKM | null;
   onNavigationChange?: (isNavigating: boolean, targetUMKM: UMKM | null) => void;
   onUserLocationChange?: (location: { lat: number; lng: number } | null, accuracy: number | null) => void;
+  onActiveNavigationChange?: (isActive: boolean) => void;
 }
 
-export default function UMKMMap({ mapStyle = "openstreetmap", selectedCategory = "Semua", selectedUMKM = null, onNavigationChange, onUserLocationChange }: UMKMMapProps) {
+export default function UMKMMap({ mapStyle = "openstreetmap", selectedCategory = "Semua", selectedUMKM = null, onNavigationChange, onUserLocationChange, onActiveNavigationChange }: UMKMMapProps) {
   const [category, setCategory] = useState(selectedCategory);
   const [isDark, setIsDark] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
@@ -92,7 +93,7 @@ export default function UMKMMap({ mapStyle = "openstreetmap", selectedCategory =
 
   return (
     <div className="w-full h-full">
-      <MapComponent isDark={isDark} category={category} mapStyle={currentMapStyle} selectedUMKM={selectedUMKM} onNavigationChange={onNavigationChange} onUserLocationChange={onUserLocationChange} />
+      <MapComponent isDark={isDark} category={category} mapStyle={currentMapStyle} selectedUMKM={selectedUMKM} onNavigationChange={onNavigationChange} onUserLocationChange={onUserLocationChange} onActiveNavigationChange={onActiveNavigationChange} />
     </div>
   );
 }
