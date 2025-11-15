@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
+import { CAT_COLOR } from '@/data/umkm';
 
 interface UMKM {
   no: number;
@@ -16,30 +17,6 @@ interface UMKM {
   operatingHours: string;
 }
 
-const CAT_COLOR: Record<string, string> = {
-  "Kuliner": "#F97316",
-  "Restoran": "#FF6B35",
-  "Warung nasi": "#FB923C",
-  "Fashion & Pakaian": "#8B5CF6",
-  "Pakaian": "#A78BFA",
-  "Toko Pakaian": "#D8B4FE",
-  "Kerajinan Tangan": "#DC2626",
-  "Kerajinan": "#EF4444",
-  "Jasa": "#0EA5E9",
-  "Layanan Jasa": "#0284C7",
-  "Elektronik": "#6366F1",
-  "Toko Elektronik": "#818CF8",
-  "Kesehatan & Kecantikan": "#EC4899",
-  "Kesehatan": "#F472B6",
-  "Kecantikan": "#FB7185",
-  "Toko Buah dan Sayuran": "#22C55E",
-  "Toko bahan makanan": "#84CC16",
-  "Toko Perlengkapan Rumah": "#14B8A6",
-  "Kedai Kopi": "#92400E",
-  "Toko Sepatu": "#7C2D12",
-  "Pusat Perbelanjaan": "#9333EA",
-};
-
 export interface MapProps {
   isDark: boolean;
   category: string;
@@ -48,9 +25,10 @@ export interface MapProps {
   onNavigationChange?: (isNavigating: boolean, targetUMKM: UMKM | null) => void;
   onUserLocationChange?: (location: { lat: number; lng: number } | null, accuracy: number | null) => void;
   onActiveNavigationChange?: (isActive: boolean) => void;
+  onUMKMDeselect?: () => void;
 }
 
-export default function Map({ isDark, category, mapStyle, selectedUMKM, onNavigationChange, onUserLocationChange, onActiveNavigationChange }: MapProps) {
+export default function Map({ isDark, category, mapStyle, selectedUMKM, onNavigationChange, onUserLocationChange, onActiveNavigationChange, onUMKMDeselect }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const layerGroupRef = useRef<L.LayerGroup | null>(null);
   const [umkms, setUmkms] = useState<UMKM[]>([]);
@@ -63,6 +41,8 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
   const [navigationTarget, setNavigationTarget] = useState<{ lat: number; lng: number } | null>(null);
   const [isDestinationSet, setIsDestinationSet] = useState(false);
   const [isActiveNavigation, setIsActiveNavigation] = useState(false);
+  const popupCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isSwitchingUMKMRef = useRef(false);
 
   // Fetch UMKM data from API
   useEffect(() => {
@@ -239,6 +219,9 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
     }, 100);
 
     return () => {
+      if (popupCloseTimeoutRef.current) {
+        clearTimeout(popupCloseTimeoutRef.current);
+      }
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
@@ -738,6 +721,31 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
         minWidth: 320
       });
       
+      // Add event listener when popup is manually closed by user (X button)
+      marker.on('popupclose', (e: any) => {
+        // Don't trigger deselect if we're switching between UMKMs
+        if (isSwitchingUMKMRef.current) {
+          return;
+        }
+        
+        // Clear any existing timeout
+        if (popupCloseTimeoutRef.current) {
+          clearTimeout(popupCloseTimeoutRef.current);
+        }
+        
+        // Set timeout to check if popup was really closed or just switching
+        popupCloseTimeoutRef.current = setTimeout(() => {
+          // Check if another popup is open (user clicked another UMKM)
+          const hasOpenPopup = document.querySelector('.leaflet-popup');
+          
+          // Only call onUMKMDeselect if no popup is open (user clicked X)
+          if (!hasOpenPopup && onUMKMDeselect && !isSwitchingUMKMRef.current) {
+            console.log('Popup closed by user, resetting view');
+            onUMKMDeselect();
+          }
+        }, 100); // Increased delay slightly for better detection
+      });
+      
       marker.addTo(layerGroupRef.current!);
       markers.push(marker as any);
     });
@@ -751,6 +759,15 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
       }
       
       if (selectedUMKM || selectedLocation) {
+        // Mark that we're switching to another UMKM
+        isSwitchingUMKMRef.current = true;
+        
+        // Clear any pending deselect timeout when selecting new UMKM
+        if (popupCloseTimeoutRef.current) {
+          clearTimeout(popupCloseTimeoutRef.current);
+          popupCloseTimeoutRef.current = null;
+        }
+        
         // Zoom in to selected UMKM or location (only when not navigating) with high zoom
         const targetLat = selectedUMKM?.lat || selectedLocation!.lat;
         const targetLng = selectedUMKM?.lng || selectedLocation!.lng;
@@ -758,9 +775,20 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
         // Open popup for selected marker
         const firstMarker = markers[0];
         if (firstMarker) {
-          setTimeout(() => firstMarker.openPopup(), 300);
+          setTimeout(() => {
+            firstMarker.openPopup();
+            // Reset flag after popup opens
+            setTimeout(() => {
+              isSwitchingUMKMRef.current = false;
+            }, 200); // Increased to ensure popup is fully open
+          }, 300);
+        } else {
+          // No marker found, reset flag
+          isSwitchingUMKMRef.current = false;
         }
       } else {
+        // Reset flag when showing all markers
+        isSwitchingUMKMRef.current = false;
         // Show all markers - use center view with fixed zoom (shift up slightly)
         const bounds = L.featureGroup(markers).getBounds();
         const center = bounds.getCenter();

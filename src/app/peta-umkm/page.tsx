@@ -75,6 +75,11 @@ export default function PetaUMKM() {
     fetchUMKMs();
   }, []);
 
+  // Reset selectedUMKM when category changes
+  useEffect(() => {
+    setSelectedUMKM(null);
+  }, [selectedCategory]);
+
   const categories = ['Semua', ...Array.from(new Set(umkms.map(u => u.category)))];
 
   const filteredUMKMs = umkms.filter(umkm => {
@@ -192,6 +197,9 @@ export default function PetaUMKM() {
             }}
             onActiveNavigationChange={(isActive) => {
               setIsActiveNavigation(isActive);
+            }}
+            onUMKMDeselect={() => {
+              setSelectedUMKM(null);
             }}
           />
 

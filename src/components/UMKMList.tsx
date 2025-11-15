@@ -1,32 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-const CAT_COLOR: Record<string, string> = {
-  // Kategori Utama
-  "Kuliner": "#F97316",
-  "Restoran": "#FF6B35",
-  "Warung nasi": "#FB923C",
-  "Fashion & Pakaian": "#8B5CF6",
-  "Pakaian": "#A78BFA",
-  "Toko Pakaian": "#D8B4FE",
-  "Kerajinan Tangan": "#DC2626",
-  "Kerajinan": "#EF4444",
-  "Jasa": "#0EA5E9",
-  "Layanan Jasa": "#0284C7",
-  "Elektronik": "#6366F1",
-  "Toko Elektronik": "#818CF8",
-  "Kesehatan & Kecantikan": "#EC4899",
-  "Kesehatan": "#F472B6",
-  "Kecantikan": "#FB7185",
-  // Kategori tambahan dari database
-  "Toko Buah dan Sayuran": "#22C55E",
-  "Toko bahan makanan": "#84CC16",
-  "Toko Perlengkapan Rumah": "#14B8A6",
-  "Kedai Kopi": "#92400E",
-  "Toko Sepatu": "#7C2D12",
-  "Pusat Perbelanjaan": "#9333EA",
-};
+import { CAT_COLOR } from '@/data/umkm';
 
 interface UMKM {
   no: number;
