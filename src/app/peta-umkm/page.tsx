@@ -184,10 +184,11 @@ export default function PetaUMKM() {
                     </h3>
                     <div className="flex items-center gap-2 text-xs mt-1">
                       <span
-                        className="px-1.5 py-0.5 rounded font-medium text-[10px]"
+                        className="px-1.5 py-0.5 font-medium text-[10px]"
                         style={{ 
                           backgroundColor: CAT_COLOR[umkm.category] || '#6B7280',
-                          color: 'white'
+                          color: 'white',
+                          borderRadius: '4px'
                         }}
                       >
                         {umkm.category}
