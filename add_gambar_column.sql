@@ -1,9 +1,10 @@
 -- SQL Script untuk menambahkan kolom gambar ke tabel umkm
 -- Jalankan script ini di Supabase SQL Editor
 
--- Tambahkan kolom gambar (URL gambar)
+-- Tambahkan kolom gambar_url (URL gambar) - sesuai dengan nama kolom yang sudah ada
+-- Jika kolom 'gambar_url' sudah ada, skip langkah ini
 ALTER TABLE umkm 
-ADD COLUMN IF NOT EXISTS gambar TEXT;
+ADD COLUMN IF NOT EXISTS gambar_url TEXT;
 
 -- Update existing records dengan default NULL (akan diisi nanti)
 -- Tidak perlu UPDATE karena kolom baru otomatis NULL
@@ -11,7 +12,7 @@ ADD COLUMN IF NOT EXISTS gambar TEXT;
 -- Verifikasi kolom sudah ditambahkan
 SELECT column_name, data_type, is_nullable
 FROM information_schema.columns
-WHERE table_name = 'umkm' AND column_name = 'gambar';
+WHERE table_name = 'umkm' AND column_name = 'gambar_url';
 
 -- Lihat struktur tabel setelah perubahan
 SELECT * FROM umkm LIMIT 1;

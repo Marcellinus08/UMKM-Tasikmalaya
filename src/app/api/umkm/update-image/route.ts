@@ -62,10 +62,10 @@ export async function POST(request: NextRequest) {
 
     const imageUrl = urlData.publicUrl;
 
-    // Update database with image URL
+    // Update database with image URL (kolom gambar_url)
     const { data, error } = await supabase
       .from('umkm')
-      .update({ gambar: imageUrl })
+      .update({ gambar_url: imageUrl })
       .eq('id', id)
       .select();
 

@@ -43,7 +43,7 @@ export async function GET() {
           lat,
           lng,
           operatingHours: umkm.waktu_buka || '',
-          gambar: umkm.gambar || null
+          gambar: umkm.gambar_url || null
         };
       });
 
