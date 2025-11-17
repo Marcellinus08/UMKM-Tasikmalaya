@@ -182,11 +182,11 @@ export default function InputGambarPage() {
           {umkmList.map((umkm) => (
             <div 
               key={umkm.no} 
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 flex flex-col"
             >
-              {/* UMKM Info */}
-              <div className="mb-4">
-                <h3 className="font-bold text-lg text-gray-800 mb-1">{umkm.name}</h3>
+              {/* UMKM Info - Fixed Height */}
+              <div className="mb-4" style={{ minHeight: '140px' }}>
+                <h3 className="font-bold text-lg text-gray-800 mb-1 line-clamp-2">{umkm.name}</h3>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
                     {umkm.category}
@@ -230,7 +230,7 @@ export default function InputGambarPage() {
               </div>
 
               {/* Upload Form */}
-              <div className="space-y-3">
+              <div className="space-y-3 mt-auto">
                 <div>
                   <label 
                     htmlFor={`file-input-${umkm.no}`}

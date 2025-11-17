@@ -34,6 +34,7 @@ export default function Header() {
     { name: 'Statistik', icon: 'bar_chart', href: '/statistik' },
     { name: 'Tentang', icon: 'info', href: '/tentang' },
     { name: 'Kontak', icon: 'mail', href: '/kontak' },
+    { name: 'Setting', icon: 'settings', href: '/setting' },
   ];
 
   return (
