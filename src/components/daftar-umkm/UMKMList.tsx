@@ -68,7 +68,7 @@ export default function UMKMList({ umkms, loading }: UMKMListProps) {
                       unoptimized
                     />
                   ) : (
-                    <span className="material-icons text-white text-3xl">storefront</span>
+                    <span className="material-icons" style={{ color: 'white', fontSize: '64px' }}>store</span>
                   )}
                 </div>
 

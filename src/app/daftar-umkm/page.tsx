@@ -195,7 +195,9 @@ export default function DaftarUMKM() {
         </div>
       </main>
 
-      <FooterSection />
+      <div>
+        <FooterSection />
+      </div>
     </div>
   );
 }

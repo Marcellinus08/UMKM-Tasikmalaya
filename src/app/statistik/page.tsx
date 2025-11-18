@@ -135,7 +135,9 @@ export default function StatistikPage() {
         </div>
       </main>
 
-      <FooterSection />
+      <div>
+        <FooterSection />
+      </div>
     </div>
   );
 }

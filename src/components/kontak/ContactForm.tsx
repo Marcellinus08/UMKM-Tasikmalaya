@@ -44,8 +44,8 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="lg:col-span-2">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
+    <div className="lg:col-span-2 h-full">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-200 dark:border-gray-700 h-full flex flex-col">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
           <span className="material-icons text-emerald-600">edit_note</span>
           Kirim Pesan
@@ -60,7 +60,7 @@ export default function ContactForm() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 flex-1 flex flex-col">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Name */}
             <div>
@@ -176,16 +176,16 @@ export default function ContactForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:from-emerald-700 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 transition-all duration-300 group"
+            className="w-full px-3 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg text-sm font-medium hover:from-emerald-600 hover:to-green-600 transition-all flex items-center justify-center gap-1 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>
-                <span className="material-icons animate-spin">refresh</span>
+                <span className="material-icons text-sm animate-spin">refresh</span>
                 <span>Mengirim...</span>
               </>
             ) : (
               <>
-                <span className="material-icons group-hover:translate-x-1 transition-transform">send</span>
+                <span className="material-icons text-sm">send</span>
                 <span>Kirim Pesan</span>
               </>
             )}

@@ -30,7 +30,7 @@ export default function TeamSection() {
   ];
 
   return (
-    <div className="mb-16">
+    <div>
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 to-purple-500/10 border border-emerald-500/20 rounded-full backdrop-blur-sm mb-6">
           <span className="material-icons text-emerald-600 dark:text-emerald-500 text-sm">groups</span>

@@ -25,14 +25,16 @@ export default function Kontak() {
         <div className="container mx-auto max-w-7xl">
           <HeaderSection />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <ContactInfo />
             <ContactForm />
           </div>
         </div>
       </main>
 
-      <FooterSection />
+      <div>
+        <FooterSection />
+      </div>
     </div>
   );
 }

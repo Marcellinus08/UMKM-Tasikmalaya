@@ -30,7 +30,7 @@ export default function TopCategories({ categoryStats }: TopCategoriesProps) {
               className="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center"
               style={{ backgroundColor: stat.color }}
             >
-              <span className="material-icons text-white text-2xl">storefront</span>
+              <span className="material-icons" style={{ color: 'white', fontSize: '36px' }}>store</span>
             </div>
             <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-1">{stat.category}</h3>
             <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-500">{stat.count}</p>

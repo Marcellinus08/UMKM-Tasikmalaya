@@ -19,17 +19,22 @@ export default function DistrictBarChart({ districtStats }: DistrictBarChartProp
 
       <div className="space-y-6">
         {/* Bar Chart */}
-        <div className="flex items-end justify-between gap-2 px-4" style={{ height: '256px' }}>
+        <div className="relative flex items-end justify-between gap-2 px-4" style={{ height: '256px' }}>
           {districtStats.map((stat, index) => {
             const heightPercentage = (stat.count / maxDistrictCount) * 100;
             const heightInPx = (heightPercentage / 100) * 256; // 256px = container height
             
             return (
-              <div key={index} className="flex-1 flex flex-col items-center gap-2 group" style={{ height: '100%', justifyContent: 'flex-end' }}>
-                {/* Value label on top */}
-                <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity z-10" style={{ bottom: `${heightInPx + 40}px` }}>
-                  <div className="bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded whitespace-nowrap">
+              <div key={index} className="flex-1 flex flex-col items-center gap-2 group relative" style={{ height: '100%', justifyContent: 'flex-end' }}>
+                {/* Value label on top - now with fixed positioning */}
+                <div 
+                  className="absolute left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none"
+                  style={{ bottom: 'calc(100% + 8px)' }}
+                >
+                  <div className="bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg">
                     {stat.count} UMKM
+                    {/* Arrow pointer */}
+                    <div className="absolute left-1/2 transform -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-emerald-600"></div>
                   </div>
                 </div>
                 

@@ -29,7 +29,9 @@ export default function Tentang() {
         </div>
       </main>
 
-      <FooterSection />
+      <div>
+        <FooterSection />
+      </div>
     </div>
   );
 }

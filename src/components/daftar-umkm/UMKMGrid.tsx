@@ -67,7 +67,7 @@ export default function UMKMGrid({ umkms, loading }: UMKMGridProps) {
                     unoptimized
                   />
                 ) : (
-                  <span className="material-icons text-gray-900 dark:text-white text-2xl">storefront</span>
+                  <span className="material-icons" style={{ color: 'white', fontSize: '48px' }}>store</span>
                 )}
               </div>
               <div className="flex-1 min-w-0">
