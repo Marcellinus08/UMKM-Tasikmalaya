@@ -2,9 +2,15 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    // jika pakai app router di root
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+
+    // jika struktur di dalam src (kayak punyamu)
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   darkMode: 'class',
   theme: {
@@ -22,27 +28,27 @@ const config: Config = {
           800: '#064A18',
           900: '#032505',
         },
-        "background-light": "#F8FAFC",
-        "background-dark": "#0F172A",
-        "card-light": "#FFFFFF",
-        "card-dark": "#1E293B",
-        "text-light": "#1E293B",
-        "text-dark": "#F1F5F9",
-        "subtext-light": "#64748B",
-        "subtext-dark": "#94A3B8",
+        'background-light': '#F8FAFC',
+        'background-dark': '#0F172A',
+        'card-light': '#FFFFFF',
+        'card-dark': '#1E293B',
+        'text-light': '#1E293B',
+        'text-dark': '#F1F5F9',
+        'subtext-light': '#64748B',
+        'subtext-dark': '#94A3B8',
         accent: {
-          blue: "#3B82F6",
-          purple: "#8B5CF6",
-          pink: "#EC4899",
-          orange: "#F97316",
-          teal: "#14B8A6"
-        }
+          blue: '#3B82F6',
+          purple: '#8B5CF6',
+          pink: '#EC4899',
+          orange: '#F97316',
+          teal: '#14B8A6',
+        },
       },
       fontFamily: {
-        sans: ["Poppins", "sans-serif"],
+        sans: ['Poppins', 'sans-serif'],
       },
       borderRadius: {
-        DEFAULT: "0.5rem",
+        DEFAULT: '0.5rem',
       },
       zIndex: {
         '1': '1',
@@ -64,11 +70,12 @@ const config: Config = {
         },
       },
       boxShadow: {
-        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+        soft: '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
         'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
       },
     },
   },
   plugins: [],
 }
+
 export default config
