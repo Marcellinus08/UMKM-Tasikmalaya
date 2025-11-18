@@ -57,14 +57,31 @@ export default function Header() {
               </div>
             </div>
             
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 bg-clip-text text-transparent">
-                UMKM
-              </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
-                <span className="material-icons text-xs">location_on</span>
-                Tasikmalaya
-              </p>
+            {/* Teks UMKM / TASIKMALAYA */}
+            <div className="inline-flex flex-col items-stretch leading-none">
+              {/* Baris UMKM */}
+              <div className="flex justify-between">
+                {'UMKM'.split('').map((ch, i) => (
+                  <span
+                    key={i}
+                    className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 bg-clip-text text-transparent"
+                  >
+                    {ch}
+                  </span>
+                ))}
+              </div>
+
+              {/* Baris TASIKMALAYA */}
+              <div className="mt-[2px] font-semibold flex justify-between">
+                {'TASIKMALAYA'.split('').map((ch, i) => (
+                  <span
+                    key={i}
+                    className="text-[11px] text-gray-600 dark:text-gray-400"
+                  >
+                    {ch}
+                  </span>
+                ))}
+              </div>
             </div>
           </Link>
 
