@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 export default function Header() {
   const [isDark, setIsDark] = useState(false);
@@ -48,12 +49,16 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative">
-              {/* Glow effect - Green */}
-              <div className="absolute -inset-2 bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400 rounded-full blur opacity-40 group-hover:opacity-70 transition duration-500"></div>
-              
-              {/* Logo container - Green */}
-              <div className="relative w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="material-icons text-white text-4xl">store</span>
+              {/* Logo container */}
+              <div className="relative w-12 h-12 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg overflow-hidden">
+                <Image 
+                  src="/logo_umkm.png" 
+                  alt="Logo UMKM"
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-contain"
+                  priority
+                />
               </div>
             </div>
             
