@@ -136,12 +136,12 @@ export default function InputGambarPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <Header />
         <div className="flex items-center justify-center min-h-[80vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Memuat data UMKM...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 dark:border-emerald-400 mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-300">Memuat data UMKM...</p>
           </div>
         </div>
       </div>
@@ -149,18 +149,18 @@ export default function InputGambarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Header />
       
       <div className="container mx-auto px-4 py-8 pt-24">
         {/* Header Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Input Gambar UMKM</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Input Gambar UMKM</h1>
+          <p className="text-gray-600 dark:text-gray-300">
             Upload gambar untuk setiap UMKM. Halaman ini bersifat sementara untuk keperluan input data.
           </p>
-          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
+          <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+            <p className="text-sm text-yellow-800 dark:text-yellow-200">
               <span className="font-semibold">⚠️ Catatan:</span> Format yang didukung: JPG, PNG, GIF, WebP. Ukuran maksimal: 5MB
             </p>
           </div>
@@ -170,8 +170,8 @@ export default function InputGambarPage() {
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${
             message.type === 'success' 
-              ? 'bg-green-50 border border-green-200 text-green-800' 
-              : 'bg-red-50 border border-red-200 text-red-800'
+              ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 text-green-800 dark:text-green-200' 
+              : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-800 dark:text-red-200'
           }`}>
             <p className="font-medium">{message.text}</p>
           </div>
@@ -182,28 +182,28 @@ export default function InputGambarPage() {
           {umkmList.map((umkm) => (
             <div 
               key={umkm.no} 
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 flex flex-col"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 flex flex-col border border-gray-100 dark:border-gray-700"
             >
               {/* UMKM Info - Fixed Height */}
               <div className="mb-4" style={{ minHeight: '140px' }}>
-                <h3 className="font-bold text-lg text-gray-800 mb-1 line-clamp-2">{umkm.name}</h3>
+                <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-1 line-clamp-2">{umkm.name}</h3>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
                     {umkm.category}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-1">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
                   <span className="font-medium">Kecamatan:</span> {umkm.district}
                 </p>
-                <p className="text-xs text-gray-500 line-clamp-2">{umkm.address}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{umkm.address}</p>
               </div>
 
               {/* Current Image or Preview */}
               <div className="mb-4">
-                <p className="text-xs font-medium text-gray-600 mb-2">
+                <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                   {previewUrls[umkm.no] ? 'Preview Gambar Baru:' : umkm.gambar ? 'Gambar Saat Ini:' : 'Belum Ada Gambar'}
                 </p>
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
                   {previewUrls[umkm.no] ? (
                     <img 
                       src={previewUrls[umkm.no]} 
@@ -234,7 +234,7 @@ export default function InputGambarPage() {
                 <div>
                   <label 
                     htmlFor={`file-input-${umkm.no}`}
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                   >
                     Pilih Gambar
                   </label>
@@ -243,11 +243,11 @@ export default function InputGambarPage() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleFileSelect(umkm.no, e.target.files?.[0] || null)}
-                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer cursor-pointer"
+                    className="w-full text-sm text-gray-600 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 dark:file:bg-emerald-900/30 file:text-emerald-700 dark:file:text-emerald-300 hover:file:bg-emerald-100 dark:hover:file:bg-emerald-900/50 file:cursor-pointer cursor-pointer"
                     disabled={uploading === umkm.no}
                   />
                   {selectedFiles[umkm.no] && (
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       {selectedFiles[umkm.no]!.name} ({(selectedFiles[umkm.no]!.size / 1024).toFixed(1)} KB)
                     </p>
                   )}
@@ -258,8 +258,8 @@ export default function InputGambarPage() {
                   disabled={uploading === umkm.no || !selectedFiles[umkm.no]}
                   className={`w-full px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                     uploading === umkm.no || !selectedFiles[umkm.no]
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md active:scale-95'
+                      ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                      : 'bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 hover:shadow-md active:scale-95'
                   }`}
                 >
                   {uploading === umkm.no ? (
@@ -279,11 +279,11 @@ export default function InputGambarPage() {
               {/* Status Badge */}
               <div className="mt-3 flex justify-end">
                 {umkm.gambar ? (
-                  <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-medium">
+                  <span className="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full font-medium">
                     ✓ Sudah ada gambar
                   </span>
                 ) : (
-                  <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full font-medium">
+                  <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full font-medium">
                     Belum ada gambar
                   </span>
                 )}
@@ -293,30 +293,30 @@ export default function InputGambarPage() {
         </div>
 
         {/* Summary */}
-        <div className="mt-8 p-6 bg-white rounded-xl shadow-md">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Ringkasan</h2>
+        <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700">
+          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Ringkasan</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-2xl font-bold text-blue-600">{umkmList.length}</p>
-              <p className="text-sm text-gray-600">Total UMKM</p>
+            <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800">
+              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{umkmList.length}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Total UMKM</p>
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">
+            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
+              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {umkmList.filter(u => u.gambar).length}
               </p>
-              <p className="text-sm text-gray-600">Sudah Ada Gambar</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Sudah Ada Gambar</p>
             </div>
-            <div className="text-center p-4 bg-yellow-50 rounded-lg">
-              <p className="text-2xl font-bold text-yellow-600">
+            <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-100 dark:border-yellow-800">
+              <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
                 {umkmList.filter(u => !u.gambar).length}
               </p>
-              <p className="text-sm text-gray-600">Belum Ada Gambar</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Belum Ada Gambar</p>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <p className="text-2xl font-bold text-purple-600">
+            <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-100 dark:border-purple-800">
+              <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                 {umkmList.length > 0 ? Math.round((umkmList.filter(u => u.gambar).length / umkmList.length) * 100) : 0}%
               </p>
-              <p className="text-sm text-gray-600">Progress</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Progress</p>
             </div>
           </div>
         </div>
