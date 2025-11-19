@@ -347,7 +347,6 @@ export default function PetaUMKM() {
               <option value="openstreetmap">🗺️ OpenStreetMap</option>
               <option value="esri">🌍 Esri Street</option>
               <option value="satellite">🛰️ Satelit</option>
-              <option value="terrain">⛰️ Terrain</option>
             </select>
           </div>
 
