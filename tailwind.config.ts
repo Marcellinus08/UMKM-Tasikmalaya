@@ -5,7 +5,22 @@ const config: Config = {
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/hooks/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  safelist: [
+    {
+      pattern: /bg-(primary|accent|red|green|blue|yellow|purple|pink|orange|teal)-(50|100|200|300|400|500|600|700|800|900)/,
+    },
+    {
+      pattern: /text-(primary|accent|red|green|blue|yellow|purple|pink|orange|teal)-(50|100|200|300|400|500|600|700|800|900)/,
+    },
+    {
+      pattern: /animate-(pulse|bounce|spin|fade|slide)/,
+    },
   ],
   darkMode: 'class',
   theme: {
