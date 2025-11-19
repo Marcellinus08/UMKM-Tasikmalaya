@@ -13,7 +13,7 @@ export default function HeroSection() {
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="text-center space-y-8">
           {/* Badge - Green */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-400/20 to-green-400/20 border border-emerald-400/30 rounded-full backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-emerald-400/20 to-green-400/20 border border-emerald-400/30 rounded-full backdrop-blur-sm">
             <span className="material-icons text-emerald-600 dark:text-emerald-400 text-sm animate-pulse">
               verified
             </span>
@@ -24,7 +24,7 @@ export default function HeroSection() {
 
           {/* Main heading - Green */}
           <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            <span className="block bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 bg-clip-text text-transparent pb-2">
+            <span className="block bg-linear-to-r from-emerald-600 via-green-600 to-teal-600 bg-clip-text text-transparent pb-2">
               Temukan UMKM
             </span>
             <span className="block text-gray-900 dark:text-white">
@@ -42,9 +42,9 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Link
               href="/peta-umkm"
-              className="group relative px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2 overflow-hidden"
+              className="group relative px-8 py-4 bg-linear-to-r from-emerald-500 to-green-500 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2 overflow-hidden"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+              <span className="absolute inset-0 bg-linear-to-r from-emerald-600 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity"></span>
               <span className="material-icons relative">map</span>
               <span className="relative">Jelajahi Peta</span>
             </Link>

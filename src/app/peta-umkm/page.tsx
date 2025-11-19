@@ -24,7 +24,7 @@ interface UMKM {
 const UMKMMap = dynamic(() => import('@/components/UMKMMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[600px] rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 animate-pulse flex items-center justify-center">
+    <div className="w-full h-[600px] rounded-2xl bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 animate-pulse flex items-center justify-center">
       <div className="text-center">
         <span className="material-icons text-6xl text-gray-400 dark:text-gray-600 animate-spin">map</span>
         <p className="text-gray-500 dark:text-gray-400 mt-4">Memuat peta...</p>
@@ -234,7 +234,7 @@ export default function PetaUMKM() {
                 {/* User Location Info */}
                 {userLocation && (
                   <div className="flex items-start gap-2 pb-2 border-b border-gray-100 dark:border-gray-700">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow">
+                    <div className="w-8 h-8 bg-linear-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow">
                       <span className="material-icons text-white text-base">my_location</span>
                     </div>
                     <div className="flex-1 min-w-0">
@@ -250,7 +250,7 @@ export default function PetaUMKM() {
 
                 {/* Navigation Target Info */}
                 <div className="flex items-start gap-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow">
+                  <div className="w-8 h-8 bg-linear-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow">
                     <span className="material-icons text-white text-base">place</span>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -296,7 +296,7 @@ export default function PetaUMKM() {
                           (window as any).startActiveNavigation();
                         }
                       }}
-                      className="flex-1 px-2.5 py-2 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-500 bg-[length:200%_100%] hover:bg-[position:100%_0] text-white rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all duration-400 hover:shadow-lg hover:shadow-blue-500/40 hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.99] flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/30"
+                      className="flex-1 px-2.5 py-2 bg-linear-to-r from-blue-500 via-blue-600 to-blue-500 bg-[length:200%_100%] hover:bg-[position:100%_0] text-white rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all duration-400 hover:shadow-lg hover:shadow-blue-500/40 hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.99] flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/30"
                       style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}
                     >
                       <span className="material-icons" style={{ fontSize: '13px' }}>navigation</span>
@@ -314,7 +314,7 @@ export default function PetaUMKM() {
                         (window as any).stopNavigation();
                       }
                     }}
-                    className={`px-2.5 py-2 bg-gradient-to-r from-red-500 via-red-600 to-red-500 bg-[length:200%_100%] hover:bg-[position:100%_0] text-white rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all duration-400 hover:shadow-lg hover:shadow-red-500/40 hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.99] flex items-center justify-center gap-1.5 shadow-md shadow-red-500/30 ${isActiveNavigation ? 'flex-1' : ''}`}
+                    className={`px-2.5 py-2 bg-linear-to-r from-red-500 via-red-600 to-red-500 bg-[length:200%_100%] hover:bg-[position:100%_0] text-white rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all duration-400 hover:shadow-lg hover:shadow-red-500/40 hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.99] flex items-center justify-center gap-1.5 shadow-md shadow-red-500/30 ${isActiveNavigation ? 'flex-1' : ''}`}
                     style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}
                   >
                     <span className="material-icons" style={{ fontSize: '13px' }}>close</span>
@@ -326,7 +326,7 @@ export default function PetaUMKM() {
                     href={`https://www.google.com/maps/dir/?api=1&destination=${navigationTarget.lat},${navigationTarget.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-2.5 py-2 bg-gradient-to-r from-emerald-500 via-green-600 to-emerald-500 bg-[length:200%_100%] hover:bg-[position:100%_0] text-white rounded-lg transition-all duration-400 hover:shadow-lg hover:shadow-emerald-500/40 hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.99] flex items-center justify-center shadow-md shadow-emerald-500/30"
+                    className="px-2.5 py-2 bg-linear-to-r from-emerald-500 via-green-600 to-emerald-500 bg-[length:200%_100%] hover:bg-[position:100%_0] text-white rounded-lg transition-all duration-400 hover:shadow-lg hover:shadow-emerald-500/40 hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.99] flex items-center justify-center shadow-md shadow-emerald-500/30"
                     title="Buka di Google Maps"
                     style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}
                   >
@@ -373,7 +373,7 @@ export default function PetaUMKM() {
                   </div>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button className="px-3 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg text-sm font-medium hover:from-emerald-600 hover:to-green-600 transition-all flex items-center gap-1 shadow-md">
+                  <button className="px-3 py-2 bg-linear-to-r from-emerald-500 to-green-500 text-white rounded-lg text-sm font-medium hover:from-emerald-600 hover:to-green-600 transition-all flex items-center gap-1 shadow-md">
                     <span className="material-icons text-sm">info</span>
                     Detail
                   </button>

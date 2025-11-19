@@ -4,7 +4,7 @@ export default function FeaturesSection() {
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Fitur <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Platform</span>
+            Fitur <span className="bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Platform</span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Teknologi terkini untuk kemudahan akses informasi UMKM
@@ -55,7 +55,7 @@ export default function FeaturesSection() {
               className="group p-8 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className={`inline-flex p-4 bg-gradient-to-br ${feature.color} rounded-xl shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`inline-flex p-4 bg-linear-to-br ${feature.color} rounded-xl shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300`}>
                 <span className="material-icons text-white text-4xl">{feature.icon}</span>
               </div>
               

@@ -86,7 +86,7 @@ export default function DaftarUMKM() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Fixed Green Blur Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-20 left-10 w-96 h-96 bg-emerald-500/30 rounded-full blur-3xl animate-pulse-green"></div>
@@ -170,7 +170,7 @@ export default function DaftarUMKM() {
                         onClick={() => handlePageChange(page)}
                         className={`w-10 h-10 rounded-lg font-medium transition-all duration-300 ${
                           currentPage === page
-                            ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg'
+                            ? 'bg-linear-to-r from-emerald-500 to-green-500 text-white shadow-lg'
                             : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                         }`}
                       >

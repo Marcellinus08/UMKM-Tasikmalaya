@@ -31,12 +31,12 @@ export default function PurposeSection() {
   return (
     <div className="mb-16">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-full backdrop-blur-sm mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-full backdrop-blur-sm mb-6">
           <span className="material-icons text-emerald-600 dark:text-emerald-500 text-sm">flag</span>
           <span className="text-sm font-medium text-emerald-600 dark:text-emerald-500">Tujuan Platform</span>
         </div>
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          Mengapa Platform <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Ini Ada?</span>
+          Mengapa Platform <span className="bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Ini Ada?</span>
         </h2>
         <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
           Platform ini hadir dengan tujuan mulia untuk memberdayakan UMKM Tasikmalaya melalui transformasi digital
@@ -51,7 +51,7 @@ export default function PurposeSection() {
           >
             <div className="flex items-start gap-6">
               <div className="flex-shrink-0">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                <div className="w-16 h-16 bg-linear-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                   <span className="material-icons text-white text-3xl">{purpose.icon}</span>
                 </div>
               </div>

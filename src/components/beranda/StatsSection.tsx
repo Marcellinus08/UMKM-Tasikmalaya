@@ -19,12 +19,12 @@ export default function StatsSection({ loading, stats }: StatsSectionProps) {
           ].map((stat, index) => (
             <div
               key={stat.label}
-              className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${stat.bgColor} dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 group`}
+              className={`relative overflow-hidden rounded-2xl bg-linear-to-br ${stat.bgColor} dark:bg-linear-to-br dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 group`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Decorative circles */}
-              <div className={`absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br ${stat.color} rounded-full opacity-10 group-hover:opacity-20 transition-opacity`}></div>
-              <div className={`absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br ${stat.color} rounded-full opacity-5`}></div>
+              <div className={`absolute -top-10 -right-10 w-32 h-32 bg-linear-to-br ${stat.color} rounded-full opacity-10 group-hover:opacity-20 transition-opacity`}></div>
+              <div className={`absolute -bottom-8 -left-8 w-24 h-24 bg-linear-to-br ${stat.color} rounded-full opacity-5`}></div>
               
               {/* Pattern overlay */}
               <div className="absolute inset-0 opacity-5">
@@ -36,7 +36,7 @@ export default function StatsSection({ loading, stats }: StatsSectionProps) {
               <div className="relative p-6">
                 {/* Icon and Value Row */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className={`flex items-center justify-center w-14 h-14 bg-gradient-to-br ${stat.color} rounded-xl shadow-lg group-hover:scale-110 transition-transform`}>
+                  <div className={`flex items-center justify-center w-14 h-14 bg-linear-to-br ${stat.color} rounded-xl shadow-lg group-hover:scale-110 transition-transform`}>
                     <span className="material-icons text-white text-2xl">{stat.icon}</span>
                   </div>
                   
@@ -53,7 +53,7 @@ export default function StatsSection({ loading, stats }: StatsSectionProps) {
                 
                 {/* Label */}
                 <div className="flex items-center gap-2">
-                  <div className={`h-1 w-8 bg-gradient-to-r ${stat.color} rounded-full`}></div>
+                  <div className={`h-1 w-8 bg-linear-to-r ${stat.color} rounded-full`}></div>
                   <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
                     {stat.label}
                   </p>
@@ -62,7 +62,7 @@ export default function StatsSection({ loading, stats }: StatsSectionProps) {
                 {/* Progress bar effect */}
                 <div className="mt-4 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div 
-                    className={`h-full bg-gradient-to-r ${stat.color} rounded-full transition-all duration-1000 ease-out`}
+                    className={`h-full bg-linear-to-r ${stat.color} rounded-full transition-all duration-1000 ease-out`}
                     style={{ width: loading ? '0%' : '100%' }}
                   ></div>
                 </div>

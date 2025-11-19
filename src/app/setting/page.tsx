@@ -136,7 +136,7 @@ export default function InputGambarPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
         <Header />
         <div className="flex items-center justify-center min-h-[80vh]">
           <div className="text-center">
@@ -149,7 +149,7 @@ export default function InputGambarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
       <Header />
       
       <div className="container mx-auto px-4 py-8 pt-24">

@@ -112,25 +112,25 @@ export default function Dashboard() {
             title="Total UMKM"
             value={totalUMKM}
             icon="store"
-            gradient="bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20"
+            gradient="bg-linear-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20"
           />
           <StatCard
             title="Kategori UMKM"
             value={categories.length}
             icon="category"
-            gradient="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20"
+            gradient="bg-linear-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20"
           />
           <StatCard
             title="Kategori Terpopuler"
             value={mostPopularCategory}
             icon="trending_up"
-            gradient="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20"
+            gradient="bg-linear-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20"
           />
           <StatCard
             title="Kecamatan Terjangkau"
             value={districts.length}
             icon="location_city"
-            gradient="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20"
+            gradient="bg-linear-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20"
           />
         </div>
 

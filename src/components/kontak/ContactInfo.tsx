@@ -57,7 +57,7 @@ export default function ContactInfo() {
           {contactInfo.map((info, index) => (
             <div key={index} className="group">
               <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 bg-gradient-to-br ${info.color} rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg`}>
+                <div className={`w-12 h-12 bg-linear-to-br ${info.color} rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-lg`}>
                   <span className="material-icons text-white">{info.icon}</span>
                 </div>
                 <div className="flex-1">

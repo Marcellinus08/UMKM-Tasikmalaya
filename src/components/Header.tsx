@@ -12,7 +12,18 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    setIsDark(document.documentElement.classList.contains('dark'));
+    // Check localStorage and system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const shouldBeDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+    
+    if (shouldBeDark) {
+      document.documentElement.classList.add('dark');
+      setIsDark(true);
+    } else {
+      document.documentElement.classList.remove('dark');
+      setIsDark(false);
+    }
     
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -24,8 +35,17 @@ export default function Header() {
 
   const toggleDark = () => {
     const root = document.documentElement;
-    root.classList.toggle('dark');
-    setIsDark(!isDark);
+    const newIsDark = !isDark;
+    
+    if (newIsDark) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+    
+    setIsDark(newIsDark);
   };
 
   const navItems = [
@@ -50,7 +70,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative">
               {/* Glow effect */}
-              <div className="absolute -inset-2 bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400 rounded-full blur opacity-40 group-hover:opacity-70 transition duration-500"></div>
+              <div className="absolute -inset-2 bg-linear-to-r from-emerald-400 via-green-400 to-teal-400 rounded-full blur opacity-40 group-hover:opacity-70 transition duration-500"></div>
               
               {/* Logo container */}
               <div className="relative w-12 h-12 transform group-hover:scale-110 transition-transform duration-300">
@@ -72,7 +92,7 @@ export default function Header() {
                 {'UMKM'.split('').map((ch, i) => (
                   <span
                     key={i}
-                    className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 bg-clip-text text-transparent"
+                    className="text-xl md:text-2xl font-bold bg-linear-to-r from-emerald-600 via-green-600 to-teal-600 bg-clip-text text-transparent"
                   >
                     {ch}
                   </span>
@@ -111,7 +131,7 @@ export default function Header() {
                     {item.icon}
                   </span>
                   <span>{item.name}</span>
-                  <span className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-emerald-500 to-green-500 transition-all duration-300 ${
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-linear-to-r from-emerald-500 to-green-500 transition-all duration-300 ${
                     isActive ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}></span>
                 </Link>
@@ -165,7 +185,7 @@ export default function Header() {
                 onClick={() => setIsMenuOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
                   isActive
-                    ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg'
+                    ? 'bg-linear-to-r from-emerald-500 to-green-500 text-white shadow-lg'
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >

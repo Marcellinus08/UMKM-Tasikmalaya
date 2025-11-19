@@ -26,7 +26,7 @@ export default function CategoryPieChart({ categoryStats }: CategoryPieChartProp
         <div className="relative flex items-center justify-center">
           {/* Background glow effect using CSS */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-56 h-56 rounded-full bg-gradient-to-r from-emerald-500/20 via-green-500/20 to-teal-500/20 blur-2xl animate-pulse"></div>
+            <div className="w-56 h-56 rounded-full bg-linear-to-r from-emerald-500/20 via-green-500/20 to-teal-500/20 blur-2xl animate-pulse"></div>
           </div>
           
           {/* Rotating glow rings */}

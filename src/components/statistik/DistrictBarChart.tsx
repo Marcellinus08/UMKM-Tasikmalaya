@@ -40,14 +40,14 @@ export default function DistrictBarChart({ districtStats }: DistrictBarChartProp
                 
                 {/* Bar */}
                 <div 
-                  className="w-full bg-gradient-to-t from-emerald-500 to-green-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-emerald-600 hover:to-green-500 cursor-pointer relative overflow-hidden group-hover:shadow-lg flex items-start justify-center pt-2"
+                  className="w-full bg-linear-to-t from-emerald-500 to-green-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-emerald-600 hover:to-green-500 cursor-pointer relative overflow-hidden group-hover:shadow-lg flex items-start justify-center pt-2"
                   style={{ 
                     height: `${heightInPx}px`,
                     minHeight: '30px'
                   }}
                 >
                   {/* Shine effect */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-transparent transform -translate-y-full group-hover:translate-y-full transition-transform duration-1000"></div>
+                  <div className="absolute inset-0 bg-linear-to-t from-transparent via-white/20 to-transparent transform -translate-y-full group-hover:translate-y-full transition-transform duration-1000"></div>
                   
                   {/* Count label inside bar */}
                   <span className="text-white font-bold text-sm relative z-10">
