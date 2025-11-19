@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 
 interface UMKM {
@@ -13,6 +14,10 @@ interface UMKM {
 }
 
 export default function InputGambarPage() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
   const [umkmList, setUmkmList] = useState<UMKM[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState<number | null>(null);
@@ -21,8 +26,37 @@ export default function InputGambarPage() {
   const [previewUrls, setPreviewUrls] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
-    fetchUMKMData();
+    // Check if already authenticated
+    const adminAuth = localStorage.getItem('adminAuth');
+    if (adminAuth === 'authenticated') {
+      setIsAuthenticated(true);
+      fetchUMKMData();
+    } else {
+      setLoading(false);
+    }
   }, []);
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'sayasukasayasuka';
+    
+    if (password === correctPassword) {
+      localStorage.setItem('adminAuth', 'authenticated');
+      setIsAuthenticated(true);
+      setAuthError('');
+      setLoading(true);
+      fetchUMKMData();
+    } else {
+      setAuthError('Password salah!');
+      setPassword('');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuth');
+    setIsAuthenticated(false);
+    router.push('/');
+  };
 
   const fetchUMKMData = async () => {
     try {
@@ -134,6 +168,68 @@ export default function InputGambarPage() {
     }
   };
 
+  // Login Form
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
+        <div className="max-w-md w-full">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mb-4">
+                <span className="material-icons text-emerald-600 dark:text-emerald-400 text-3xl">lock</span>
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Admin Panel</h1>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Masukkan password untuk melanjutkan</p>
+            </div>
+
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setAuthError('');
+                  }}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-white"
+                  autoFocus
+                />
+                {authError && (
+                  <p className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <span className="material-icons text-sm">error</span>
+                    {authError}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full px-4 py-3 bg-linear-to-r from-emerald-500 to-green-500 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-green-600 transition-all shadow-md hover:shadow-lg"
+              >
+                Masuk
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <a
+                href="/"
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center justify-center gap-1"
+              >
+                <span className="material-icons text-sm">arrow_back</span>
+                Kembali ke Beranda
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -155,10 +251,21 @@ export default function InputGambarPage() {
       <div className="container mx-auto px-4 py-8 pt-24">
         {/* Header Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Input Gambar UMKM</h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Upload gambar untuk setiap UMKM. Halaman ini bersifat sementara untuk keperluan input data.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Input Gambar UMKM</h1>
+              <p className="text-gray-600 dark:text-gray-300">
+                Upload gambar untuk setiap UMKM. Halaman ini bersifat sementara untuk keperluan input data.
+              </p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+            >
+              <span className="material-icons text-sm">logout</span>
+              Logout
+            </button>
+          </div>
           <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
             <p className="text-sm text-yellow-800 dark:text-yellow-200">
               <span className="font-semibold">⚠️ Catatan:</span> Format yang didukung: JPG, PNG, GIF, WebP. Ukuran maksimal: 5MB
