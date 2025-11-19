@@ -6,6 +6,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { full_name, email, phone, subject, message } = body;
 
+    console.log('Received data:', { full_name, email, phone, subject, message });
+
     // Validasi input
     if (!full_name || !email || !subject || !message) {
       return NextResponse.json(
@@ -27,29 +29,41 @@ export async function POST(request: Request) {
           status: 'new', // Status default: new
         }
       ])
-      .select()
-      .single();
+      .select();
 
     if (error) {
-      console.error('Supabase error:', error);
+      console.error('Supabase error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
       return NextResponse.json(
-        { error: 'Gagal menyimpan pesan. Silakan coba lagi.' },
+        { 
+          error: 'Gagal menyimpan pesan. Silakan coba lagi.',
+          details: error.message 
+        },
         { status: 500 }
       );
     }
+
+    console.log('Insert successful:', data);
 
     return NextResponse.json(
       { 
         success: true, 
         message: 'Pesan berhasil dikirim!',
-        data 
+        data: data[0]
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error('Error:', error);
+  } catch (error: any) {
+    console.error('Error details:', error);
     return NextResponse.json(
-      { error: 'Terjadi kesalahan pada server' },
+      { 
+        error: 'Terjadi kesalahan pada server',
+        details: error.message 
+      },
       { status: 500 }
     );
   }

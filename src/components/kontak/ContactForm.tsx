@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Toast from '@/components/Toast';
 
 interface FormData {
   name: string;
@@ -6,6 +7,12 @@ interface FormData {
   phone: string;
   subject: string;
   message: string;
+}
+
+interface ToastState {
+  show: boolean;
+  message: string;
+  type: 'success' | 'error' | 'info';
 }
 
 export default function ContactForm() {
@@ -18,12 +25,15 @@ export default function ContactForm() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [toast, setToast] = useState<ToastState>({
+    show: false,
+    message: '',
+    type: 'info'
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus('idle');
     
     try {
       const response = await fetch('/api/contact', {
@@ -43,24 +53,26 @@ export default function ContactForm() {
       const result = await response.json();
 
       if (response.ok) {
-        setSubmitStatus('success');
+        setToast({
+          show: true,
+          message: 'Pesan Anda berhasil terkirim! Kami akan segera menghubungi Anda.',
+          type: 'success'
+        });
         setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-        
-        setTimeout(() => {
-          setSubmitStatus('idle');
-        }, 5000);
       } else {
-        setSubmitStatus('error');
-        setTimeout(() => {
-          setSubmitStatus('idle');
-        }, 5000);
+        setToast({
+          show: true,
+          message: result.details || result.error || 'Gagal mengirim pesan. Silakan coba lagi.',
+          type: 'error'
+        });
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmitStatus('error');
-      setTimeout(() => {
-        setSubmitStatus('idle');
-      }, 5000);
+      setToast({
+        show: true,
+        message: 'Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.',
+        type: 'error'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -74,32 +86,23 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="lg:col-span-2 h-full">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-200 dark:border-gray-700 h-full flex flex-col">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <span className="material-icons text-emerald-600">edit_note</span>
-          Kirim Pesan
-        </h2>
+    <>
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, show: false })}
+        />
+      )}
 
-        {submitStatus === 'success' && (
-          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex items-center gap-3">
-            <span className="material-icons text-green-600 dark:text-green-400">check_circle</span>
-            <p className="text-green-800 dark:text-green-400 font-medium">
-              Pesan Anda berhasil terkirim! Kami akan segera menghubungi Anda.
-            </p>
-          </div>
-        )}
+      <div className="lg:col-span-2 h-full">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-200 dark:border-gray-700 h-full flex flex-col">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+            <span className="material-icons text-emerald-600">edit_note</span>
+            Kirim Pesan
+          </h2>
 
-        {submitStatus === 'error' && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3">
-            <span className="material-icons text-red-600 dark:text-red-400">error</span>
-            <p className="text-red-800 dark:text-red-400 font-medium">
-              Gagal mengirim pesan. Silakan coba lagi.
-            </p>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6 flex-1 flex flex-col">
+          <form onSubmit={handleSubmit} className="space-y-6 flex-1 flex flex-col">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Name */}
             <div>
@@ -232,5 +235,6 @@ export default function ContactForm() {
         </form>
       </div>
     </div>
+    </>
   );
 }

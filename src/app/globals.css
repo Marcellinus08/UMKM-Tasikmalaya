@@ -2,6 +2,21 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}
+
 @theme {
   --color-primary-50: #E6FFF7;
   --color-primary-100: #B3FFE4;
