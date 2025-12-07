@@ -105,7 +105,7 @@ export const distributionOptions = {
 interface ChartProps {
   variant: 'growth' | 'distribution';
   data?: Array<{
-    no: number;
+    no: string; // UUID
     name: string;
     category: string;
     district: string;
