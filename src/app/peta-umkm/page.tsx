@@ -7,7 +7,7 @@ import { CAT_COLOR } from '@/data/umkm';
 import Image from 'next/image';
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;

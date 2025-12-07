@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;

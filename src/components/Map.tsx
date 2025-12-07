@@ -5,7 +5,7 @@ import L from 'leaflet';
 import { CAT_COLOR } from '@/data/umkm';
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;

@@ -71,7 +71,7 @@ export async function GET(request: Request) {
           district: umkm.kecamatan,
           description: `${umkm.jenis} terbaik di ${umkm.kecamatan}`,
           address: umkm.alamat,
-          phone: umkm.waktu_buka || 'Tidak ada informasi',
+          phone: umkm.telepon || 'Tidak ada informasi',
           lat,
           lng,
           operatingHours: umkm.waktu_buka || '',

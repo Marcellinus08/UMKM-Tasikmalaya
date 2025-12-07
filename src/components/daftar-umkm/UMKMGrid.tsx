@@ -1,9 +1,10 @@
 import { CAT_COLOR } from '@/data/umkm';
 import Image from 'next/image';
 import { memo } from 'react';
+import Link from 'next/link';
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;
@@ -74,7 +75,7 @@ function UMKMGrid({ umkms, loading }: UMKMGridProps) {
             {/* Header with icon/image */}
             <div className="flex items-start gap-4 mb-4">
               <div 
-                className="w-16 h-16 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform overflow-hidden flex-shrink-0"
+                className="w-16 h-16 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform overflow-hidden shrink-0"
                 style={{ backgroundColor: umkm.gambar ? 'transparent' : CAT_COLOR[umkm.category] }}
               >
                 {umkm.gambar ? (
@@ -108,16 +109,23 @@ function UMKMGrid({ umkms, loading }: UMKMGridProps) {
             
             <div className="space-y-3 mb-4">
               <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <span className="material-icons text-sm mt-0.5 text-emerald-500 flex-shrink-0">location_on</span>
+                <span className="material-icons text-sm mt-0.5 text-emerald-500 shrink-0">location_on</span>
                 <span className="flex-1">{umkm.address}</span>
               </div>
             </div>
 
-            <div className="mt-auto pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="mt-auto pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <span className="material-icons text-sm text-emerald-400 flex-shrink-0">schedule</span>
+                <span className="material-icons text-sm text-emerald-400 shrink-0">schedule</span>
                 <span className="font-medium">{umkm.operatingHours}</span>
               </div>
+              <Link
+                href={`/umkm/${umkm.no}`}
+                className="flex items-center justify-center gap-2 w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
+              >
+                <span className="material-icons text-sm">visibility</span>
+                <span>Lihat Detail</span>
+              </Link>
             </div>
           </div>
         </div>

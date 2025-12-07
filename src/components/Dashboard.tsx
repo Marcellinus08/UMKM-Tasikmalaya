@@ -36,7 +36,7 @@ const StatCard = ({ title, value, trend, icon, gradient }: StatCardProps) => (
 );
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;

@@ -9,7 +9,7 @@ import UMKMList from '@/components/daftar-umkm/UMKMList';
 import FooterSection from '@/components/beranda/FooterSection';
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;

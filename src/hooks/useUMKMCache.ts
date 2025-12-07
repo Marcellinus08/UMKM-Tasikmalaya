@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 export interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;

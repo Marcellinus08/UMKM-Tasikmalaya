@@ -1,9 +1,10 @@
 import { CAT_COLOR } from '@/data/umkm';
 import Image from 'next/image';
 import { memo } from 'react';
+import Link from 'next/link';
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;
@@ -118,6 +119,15 @@ function UMKMList({ umkms, loading }: UMKMListProps) {
                       <span className="font-medium">{umkm.operatingHours}</span>
                     </div>
                   </div>
+                  
+                  {/* Action Button */}
+                  <Link
+                    href={`/umkm/${umkm.no}`}
+                    className="mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
+                  >
+                    <span className="material-icons text-sm">visibility</span>
+                    <span>Lihat Detail</span>
+                  </Link>
                 </div>
               </div>
             </div>

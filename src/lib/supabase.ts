@@ -10,7 +10,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface UMKM {
-  no: number;
+  no: string; // UUID
   nama_perusahaan: string;
   jenis: string;
   kecamatan: string;

@@ -18,7 +18,7 @@ const FALLBACK_COLORS = [
 ];
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;

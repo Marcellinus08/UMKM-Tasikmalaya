@@ -110,7 +110,9 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => {
-              const isActive = pathname === item.href;
+              // Check if current path matches or if it's a UMKM profile page and item is Daftar UMKM
+              const isActive = pathname === item.href || 
+                (pathname.startsWith('/umkm/') && item.href === '/daftar-umkm');
               return (
                 <Link
                   key={item.name}
@@ -179,7 +181,9 @@ export default function Header() {
       >
         <nav className="container mx-auto px-4 pb-4 space-y-2">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            // Check if current path matches or if it's a UMKM profile page and item is Daftar UMKM
+            const isActive = pathname === item.href || 
+              (pathname.startsWith('/umkm/') && item.href === '/daftar-umkm');
             return (
               <Link
                 key={item.name}

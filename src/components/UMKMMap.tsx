@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { type MapProps } from "@/components/Map";
 
 interface UMKM {
-  no: number;
+  no: string; // UUID
   name: string;
   category: string;
   district: string;
