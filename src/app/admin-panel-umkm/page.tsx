@@ -20,10 +20,10 @@ export default function InputGambarPage() {
   const [authError, setAuthError] = useState('');
   const [umkmList, setUmkmList] = useState<UMKM[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState<number | null>(null);
+  const [uploading, setUploading] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [selectedFiles, setSelectedFiles] = useState<{ [key: number]: File | null }>({});
-  const [previewUrls, setPreviewUrls] = useState<{ [key: number]: string }>({});
+  const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: File | null }>({});
+  const [previewUrls, setPreviewUrls] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     // Check if already authenticated
@@ -70,7 +70,7 @@ export default function InputGambarPage() {
     }
   };
 
-  const handleFileSelect = (umkmId: number, file: File | null) => {
+  const handleFileSelect = (umkmId: string, file: File | null) => {
     if (!file) {
       setSelectedFiles(prev => ({ ...prev, [umkmId]: null }));
       setPreviewUrls(prev => {
@@ -108,7 +108,7 @@ export default function InputGambarPage() {
     });
   };
 
-  const handleImageUpload = async (umkmId: number) => {
+  const handleImageUpload = async (umkmId: string) => {
     const file = selectedFiles[umkmId];
     
     if (!file) {
@@ -121,7 +121,7 @@ export default function InputGambarPage() {
 
     try {
       const formData = new FormData();
-      formData.append('id', umkmId.toString());
+      formData.append('id', umkmId);
       formData.append('file', file);
 
       const response = await fetch('/api/umkm/update-image', {
