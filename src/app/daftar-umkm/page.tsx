@@ -340,10 +340,8 @@ export default function DaftarUMKM() {
       const refreshedData = await refreshResponse.json();
       setUmkms(refreshedData);
 
-      // Close modal after 2 seconds
-      setTimeout(() => {
-        handleCloseModal();
-      }, 2000);
+      // Close modal immediately
+      handleCloseModal();
     } catch (error) {
       console.error('Error submitting UMKM:', error);
       setToast({
