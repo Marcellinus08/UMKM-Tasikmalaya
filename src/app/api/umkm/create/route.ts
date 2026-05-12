@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
 
 export async function POST(request: Request) {
   try {
+    let db: any;
+    try {
+      const mod = await import('@/lib/firebase');
+      db = mod.db;
+    } catch (err) {
+      console.error('Firebase not configured for POST /api/umkm/create:', err);
+      return NextResponse.json(
+        { error: 'Firebase not configured on server' },
+        { status: 503 }
+      );
+    }
     const body = await request.json();
     const { 
       nama_perusahaan, 

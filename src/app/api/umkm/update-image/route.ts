@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, storage } from '@/lib/firebase';
 
 export async function POST(request: NextRequest) {
   try {
+    let db: any, storage: any;
+    try {
+      const mod = await import('@/lib/firebase');
+      db = mod.db;
+      storage = mod.storage;
+    } catch (err) {
+      console.error('Firebase not configured for POST /api/umkm/update-image:', err);
+      return NextResponse.json(
+        { error: 'Firebase not configured on server' },
+        { status: 503 }
+      );
+    }
     const formData = await request.formData();
     const id = formData.get('id') as string;
     const file = formData.get('file') as File;

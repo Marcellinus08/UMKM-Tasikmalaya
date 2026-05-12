@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
 
 export async function GET(request: Request) {
   try {
+    let db: any;
+    try {
+      const mod = await import('@/lib/firebase');
+      db = mod.db;
+    } catch (err) {
+      console.error('Firebase not configured for GET /api/umkm:', err);
+      return NextResponse.json([], { status: 200 });
+    }
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     const pageParam = searchParams.get('page');
@@ -41,7 +48,7 @@ export async function GET(request: Request) {
     }
 
     const querySnapshot = await ref.get();
-    let allData = querySnapshot.docs.map((document) => ({ id: document.id, ...document.data() }));
+    let allData = querySnapshot.docs.map((document: any) => ({ id: document.id, ...document.data() }));
 
     // Filter by search if provided (client-side since Firestore doesn't have full-text search)
     if (search) {
