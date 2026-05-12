@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
 
 export async function POST(request: Request) {
   try {
+    let db: any;
+    try {
+      const mod = await import('@/lib/firebase');
+      db = mod.db;
+    } catch (err) {
+      console.error('Firebase not configured for POST /api/contact:', err);
+      return NextResponse.json(
+        { error: 'Firebase not configured on server' },
+        { status: 503 }
+      );
+    }
     const body = await request.json();
     const { full_name, email, phone, subject, message } = body;
 
@@ -53,6 +63,18 @@ export async function POST(request: Request) {
 // GET endpoint untuk admin panel (opsional - untuk melihat pesan)
 export async function GET() {
   try {
+    let db: any;
+    try {
+      const mod = await import('@/lib/firebase');
+      db = mod.db;
+    } catch (err) {
+      console.error('Firebase not configured for GET /api/contact:', err);
+      return NextResponse.json(
+        { error: 'Firebase not configured on server' },
+        { status: 503 }
+      );
+    }
+
     const querySnapshot = await db.collection('contact_messages')
       .orderBy('created_at', 'desc')
       .get();
