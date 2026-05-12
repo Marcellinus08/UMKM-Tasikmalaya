@@ -247,32 +247,7 @@ export default function UMKMProfilePage() {
                 </p>
               </div>
 
-              {/* Gallery */}
-              {galleries.length > 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-                    <span className="material-icons text-emerald-500">photo_library</span>
-                    Galeri Foto
-                  </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {galleries.map((img, idx) => (
-                      <div
-                        key={idx}
-                        className="relative aspect-square rounded-xl overflow-hidden cursor-pointer group"
-                        onClick={() => setSelectedImage(img)}
-                      >
-                        <Image
-                          src={img}
-                          alt={`${umkm.name} - ${idx + 1}`}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-300"
-                          unoptimized
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Gallery removed: using shared icon instead of per-UMKM images */}
             </div>
 
             {/* Sidebar */}
@@ -331,30 +306,7 @@ export default function UMKMProfilePage() {
         </div>
       </main>
 
-      {/* Image Modal */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-4xl max-h-[90vh]">
-            <Image
-              src={selectedImage}
-              alt="Preview"
-              width={1200}
-              height={800}
-              className="object-contain"
-              unoptimized
-            />
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-            >
-              <span className="material-icons">close</span>
-            </button>
-          </div>
-        </div>
-      )}
+      {/* No image modal: per-UMKM images not used */}
 
       <FooterSection />
     </div>
