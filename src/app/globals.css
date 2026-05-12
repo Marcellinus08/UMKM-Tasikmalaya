@@ -102,11 +102,9 @@
     background: transparent;
   }
 
-  .leaflet-pane,
-  .leaflet-top,
-  .leaflet-bottom {
-    z-index: auto !important;
-  }
+  /* Keep Leaflet's default z-index stacking to ensure tile and overlay panes
+     render above application UI where appropriate. Overriding to `auto` caused
+     tiles to appear underneath other elements, producing a white overlay. */
 
   /* Custom marker styles */
   .custom-pin-marker {

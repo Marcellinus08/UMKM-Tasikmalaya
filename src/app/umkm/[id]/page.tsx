@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import FooterSection from '@/components/beranda/FooterSection';
-import Image from 'next/image';
+// Use a shared icon instead of per-UMKM images
 import { CAT_COLOR } from '@/data/umkm';
 import dynamic from 'next/dynamic';
 
@@ -37,7 +37,7 @@ export default function UMKMProfilePage() {
   const router = useRouter();
   const [umkm, setUmkm] = useState<UMKM | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  // no per-UMKM images used; always show shared icon
 
   // Function to check if UMKM is currently open
   const isOpen = (operatingHours: string): boolean => {
@@ -125,7 +125,7 @@ export default function UMKMProfilePage() {
     );
   }
 
-  const galleries = umkm.gambar ? [umkm.gambar] : [];
+  const galleries: string[] = [];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -149,17 +149,8 @@ export default function UMKMProfilePage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Hero Section */}
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-                {/* Cover Image */}
+                {/* Cover (shared gradient + overlay) */}
                 <div className="relative h-64 bg-linear-to-br from-emerald-500 to-green-600">
-                  {umkm.gambar && (
-                    <Image
-                      src={umkm.gambar}
-                      alt={umkm.name}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  )}
                   <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
                   
                   {/* Category Badge */}
@@ -168,7 +159,7 @@ export default function UMKMProfilePage() {
                       className="px-4 py-2 rounded-full text-sm font-bold text-white shadow-lg"
                       style={{ backgroundColor: CAT_COLOR[umkm.category] }}
                     >
-                      {umkm.category}
+                      {umkm.category || 'Lainnya'}
                     </span>
                   </div>
 
@@ -176,20 +167,9 @@ export default function UMKMProfilePage() {
                   <div className="absolute -bottom-16 left-8">
                     <div 
                       className="w-32 h-32 rounded-2xl border-4 border-white dark:border-gray-800 shadow-2xl overflow-hidden flex items-center justify-center"
-                      style={{ backgroundColor: umkm.gambar ? 'white' : CAT_COLOR[umkm.category] }}
+                      style={{ backgroundColor: CAT_COLOR[umkm.category] || '#6B7280' }}
                     >
-                      {umkm.gambar ? (
-                        <Image
-                          src={umkm.gambar}
-                          alt={umkm.name}
-                          width={128}
-                          height={128}
-                          className="w-full h-full object-cover"
-                          unoptimized
-                        />
-                      ) : (
-                        <span className="material-icons text-white" style={{ fontSize: '64px' }}>store</span>
-                      )}
+                      <span className="material-icons text-white" style={{ fontSize: '64px' }}>store</span>
                     </div>
                   </div>
                 </div>
@@ -263,7 +243,7 @@ export default function UMKMProfilePage() {
                   Tentang
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap">
-                  {umkm.tentang || `${umkm.category} terbaik di ${umkm.district}`}
+                  {umkm.tentang || `${umkm.category || 'UMKM'} terbaik di ${umkm.district}`}
                 </p>
               </div>
 

@@ -171,16 +171,20 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
     const lightTiles = L.tileLayer(selectedStyle.light, {
       attribution: selectedStyle.attribution,
       maxZoom: 19,
+      errorTileUrl: selectedStyle.dark,
       ...(selectedStyle.subdomains && { subdomains: selectedStyle.subdomains })
     });
 
     const darkTiles = L.tileLayer(selectedStyle.dark, {
       attribution: selectedStyle.attribution,
       maxZoom: 19,
+      errorTileUrl: selectedStyle.light,
       ...(selectedStyle.subdomains && { subdomains: selectedStyle.subdomains })
     });
 
+    // Add initial tiles: prefer the current theme but ensure we don't leave a blank map
     if (isDark) {
+      // Add dark tiles, but keep light tiles as fallback if dark fails
       darkTiles.addTo(mapRef.current);
     } else {
       lightTiles.addTo(mapRef.current);
@@ -215,13 +219,70 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
 
     const lightTiles = (mapRef.current as any).lightTiles;
     const darkTiles = (mapRef.current as any).darkTiles;
-    
+
+    // When switching styles, add the new layer first and wait for it to load
+    // before removing the previous layer. This avoids a brief white/blank map
+    // when the new tile server is slow or fails.
+    const switchToDark = () => {
+      if (mapRef.current!.hasLayer(darkTiles)) return;
+      let loaded = false;
+      const onLoad = () => {
+        loaded = true;
+        try { if (mapRef.current!.hasLayer(lightTiles)) mapRef.current!.removeLayer(lightTiles); } catch {}
+        darkTiles.off('load', onLoad);
+        darkTiles.off('tileerror', onError);
+      };
+      const onError = () => {
+        // If dark tiles error, fallback to light tiles
+        if (!loaded) {
+          try { if (!mapRef.current!.hasLayer(lightTiles)) lightTiles.addTo(mapRef.current!); } catch {}
+          darkTiles.off('load', onLoad);
+          darkTiles.off('tileerror', onError);
+        }
+      };
+      darkTiles.on('load', onLoad);
+      darkTiles.on('tileerror', onError);
+      darkTiles.addTo(mapRef.current!);
+
+      // Safety timeout: if dark tiles don't load within 3s, revert to light
+      setTimeout(() => {
+        if (!loaded) {
+          try { if (!mapRef.current!.hasLayer(lightTiles)) lightTiles.addTo(mapRef.current!); } catch {}
+        }
+      }, 3000);
+    };
+
+    const switchToLight = () => {
+      if (mapRef.current!.hasLayer(lightTiles)) return;
+      let loaded = false;
+      const onLoad = () => {
+        loaded = true;
+        try { if (mapRef.current!.hasLayer(darkTiles)) mapRef.current!.removeLayer(darkTiles); } catch {}
+        lightTiles.off('load', onLoad);
+        lightTiles.off('tileerror', onError);
+      };
+      const onError = () => {
+        if (!loaded) {
+          try { if (!mapRef.current!.hasLayer(darkTiles)) darkTiles.addTo(mapRef.current!); } catch {}
+          lightTiles.off('load', onLoad);
+          lightTiles.off('tileerror', onError);
+        }
+      };
+      lightTiles.on('load', onLoad);
+      lightTiles.on('tileerror', onError);
+      lightTiles.addTo(mapRef.current!);
+
+      setTimeout(() => {
+        if (!loaded) {
+          try { if (!mapRef.current!.hasLayer(darkTiles)) darkTiles.addTo(mapRef.current!); } catch {}
+        }
+      }, 3000);
+    };
+
     if (isDark) {
-      if (mapRef.current.hasLayer(lightTiles)) mapRef.current.removeLayer(lightTiles);
-      if (!mapRef.current.hasLayer(darkTiles)) darkTiles.addTo(mapRef.current);
+      switchToDark();
     } else {
-      if (mapRef.current.hasLayer(darkTiles)) mapRef.current.removeLayer(darkTiles);
-      if (!mapRef.current.hasLayer(lightTiles)) lightTiles.addTo(mapRef.current);
+      switchToLight();
     }
   }, [isDark]);
 

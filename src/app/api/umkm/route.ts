@@ -72,12 +72,13 @@ export async function GET(request: Request) {
           lng = 108.22;
         }
         
+        const categoryValue = umkm.jenis && String(umkm.jenis).trim() !== '' ? String(umkm.jenis) : 'Lainnya';
         return {
           no: umkm.id,
           name: umkm.nama_perusahaan,
-          category: umkm.jenis,
+          category: categoryValue,
           district: umkm.kecamatan,
-          description: `${umkm.jenis} terbaik di ${umkm.kecamatan}`,
+          description: `${categoryValue} terbaik di ${umkm.kecamatan}`,
           address: umkm.alamat,
           phone: umkm.telepon || 'Tidak ada informasi',
           lat,

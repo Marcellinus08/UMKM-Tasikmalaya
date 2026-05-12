@@ -355,7 +355,7 @@ export default function DaftarUMKM() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div suppressHydrationWarning className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Toast Alert */}
       {toast.show && (
         <Toast
@@ -375,7 +375,7 @@ export default function DaftarUMKM() {
 
       <Header />
       
-      <main className="relative z-10 pt-24 pb-16 px-4">
+      <main suppressHydrationWarning className="relative z-10 pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-7xl">
           <HeaderSection />
 

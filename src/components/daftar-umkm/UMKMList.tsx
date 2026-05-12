@@ -77,23 +77,9 @@ function UMKMList({ umkms, loading }: UMKMListProps) {
                 {/* Icon/Image */}
                 <div 
                   className="w-24 h-24 rounded-lg flex items-center justify-center shadow-md group-hover:scale-105 transition-transform shrink-0 overflow-hidden"
-                  style={{ backgroundColor: umkm.gambar ? 'transparent' : CAT_COLOR[umkm.category] }}
+                  style={{ backgroundColor: CAT_COLOR[umkm.category] || '#6B7280' }}
                 >
-                  {umkm.gambar ? (
-                    <Image 
-                      src={umkm.gambar} 
-                      alt={umkm.name}
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                      placeholder="blur"
-                      blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="material-icons" style={{ color: 'white', fontSize: '64px' }}>store</span>
-                  )}
+                  <span className="material-icons" style={{ color: 'white', fontSize: '64px' }}>store</span>
                 </div>
 
                 {/* Content */}
@@ -106,7 +92,7 @@ function UMKMList({ umkms, loading }: UMKMListProps) {
                       className="inline-block text-xs font-semibold text-white shrink-0"
                       style={{ backgroundColor: CAT_COLOR[umkm.category], borderRadius: '4px', padding: '3px 8px' }}
                     >
-                      {umkm.category}
+                        {umkm.category || 'Lainnya'}
                     </span>
                   </div>
                   

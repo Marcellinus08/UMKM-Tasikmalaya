@@ -75,25 +75,11 @@ function UMKMGrid({ umkms, loading }: UMKMGridProps) {
           <div className="p-6 flex flex-col flex-1">
             {/* Header with icon/image */}
             <div className="flex items-start gap-4 mb-4">
-              <div 
+                <div 
                 className="w-16 h-16 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform overflow-hidden shrink-0"
-                style={{ backgroundColor: umkm.gambar ? 'transparent' : CAT_COLOR[umkm.category] }}
+                style={{ backgroundColor: CAT_COLOR[umkm.category] || '#6B7280' }}
               >
-                {umkm.gambar ? (
-                  <Image 
-                    src={umkm.gambar} 
-                    alt={umkm.name}
-                    width={64}
-                    height={64}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
-                    unoptimized
-                  />
-                ) : (
-                  <span className="material-icons" style={{ color: 'white', fontSize: '48px' }}>store</span>
-                )}
+                <span className="material-icons" style={{ color: 'white', fontSize: '48px' }}>store</span>
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-500 transition-colors line-clamp-2">
@@ -103,7 +89,7 @@ function UMKMGrid({ umkms, loading }: UMKMGridProps) {
                   className="inline-block py-1 text-xs font-semibold text-white"
                   style={{ backgroundColor: CAT_COLOR[umkm.category], borderRadius: '4px', padding: '3px 8px' }}
                 >
-                  {umkm.category}
+                  {umkm.category || 'Lainnya'}
                 </span>
               </div>
             </div>

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { CAT_COLOR } from '@/data/umkm';
-import Image from 'next/image';
 
 interface UMKM {
   no: string; // UUID
@@ -140,20 +139,9 @@ export default function UMKMList({ onLocationSelect }: UMKMListProps) {
               {/* Icon/Image */}
               <div 
                 className="w-20 h-20 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform flex-shrink-0 overflow-hidden"
-                style={{ backgroundColor: umkm.gambar ? 'transparent' : (CAT_COLOR[umkm.category] || '#6B7280') }}
+                style={{ backgroundColor: (CAT_COLOR[umkm.category] || '#6B7280') }}
               >
-                {umkm.gambar ? (
-                  <Image 
-                    src={umkm.gambar} 
-                    alt={umkm.name}
-                    width={80}
-                    height={80}
-                    className="w-full h-full object-cover"
-                    unoptimized
-                  />
-                ) : (
-                  <span className="material-icons text-white text-3xl">storefront</span>
-                )}
+                <span className="material-icons text-white text-3xl">storefront</span>
               </div>
               
               {/* Title and Category */}
@@ -164,7 +152,7 @@ export default function UMKMList({ onLocationSelect }: UMKMListProps) {
                     shadow-soft transform group-hover:scale-105 transition-transform"
                   style={{ backgroundColor: CAT_COLOR[umkm.category] || '#6B7280' }}
                 >
-                  {umkm.category}
+                  {umkm.category || 'Lainnya'}
                 </span>
               </div>
             </div>
