@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export async function POST(request: Request) {
   try {
@@ -14,27 +15,33 @@ export async function POST(request: Request) {
     }
 
     // Get UMKM from database
-    const { data, error } = await supabase
-      .from('umkm')
-      .select('password')
-      .eq('id', id)
-      .single();
+    try {
+      const docRef = doc(db, 'umkm', id);
+      const docSnap = await getDoc(docRef);
 
-    if (error || !data) {
-      console.error('Supabase error:', error);
+      if (!docSnap.exists()) {
+        return NextResponse.json(
+          { error: 'UMKM tidak ditemukan', valid: false },
+          { status: 404 }
+        );
+      }
+
+      const data = docSnap.data();
+
+      // Verify password
+      const isValid = data?.password === password;
+
+      return NextResponse.json({
+        valid: isValid,
+        message: isValid ? 'Password benar' : 'Password salah'
+      });
+    } catch (error) {
+      console.error('Firebase error:', error);
       return NextResponse.json(
         { error: 'UMKM tidak ditemukan', valid: false },
         { status: 404 }
       );
     }
-
-    // Verify password
-    const isValid = data.password === password;
-
-    return NextResponse.json({
-      valid: isValid,
-      message: isValid ? 'Password benar' : 'Password salah'
-    });
 
   } catch (error) {
     console.error('API error:', error);

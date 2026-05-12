@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { db } from '@/lib/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 export async function POST(request: Request) {
   try {
@@ -25,38 +26,32 @@ export async function POST(request: Request) {
       );
     }
 
-    // Insert ke Supabase
-    const { data, error } = await supabase
-      .from('umkm')
-      .insert([
-        {
-          nama_perusahaan,
-          jenis,
-          kecamatan,
-          alamat,
-          telepon: telepon || null,
-          waktu_buka: waktu_buka || null,
-          latitude: parseFloat(latitude),
-          longitude: parseFloat(longitude),
-          gambar_url: null, // Will be updated via upload API if image is provided
-          password: password,
-          tentang: tentang || null
-        }
-      ])
-      .select();
+    // Create new document in Firestore
+    const umkmData = {
+      nama_perusahaan,
+      jenis,
+      kecamatan,
+      alamat,
+      telepon: telepon || null,
+      waktu_buka: waktu_buka || null,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
+      gambar_url: null, // Will be updated via upload API if image is provided
+      password: password,
+      tentang: tentang || null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
 
-    if (error) {
-      console.error('Supabase error:', error);
-      return NextResponse.json(
-        { error: 'Gagal menambahkan UMKM ke database' },
-        { status: 500 }
-      );
-    }
+    const docRef = await addDoc(collection(db, 'umkm'), umkmData);
 
     return NextResponse.json({
       success: true,
       message: 'UMKM berhasil ditambahkan',
-      data: data[0]
+      data: {
+        id: docRef.id,
+        ...umkmData
+      }
     });
 
   } catch (error) {

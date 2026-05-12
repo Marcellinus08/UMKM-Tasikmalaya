@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, query, orderBy, getDocs } from 'firebase/firestore';
 
 export async function POST(request: Request) {
   try {
@@ -16,44 +17,25 @@ export async function POST(request: Request) {
       );
     }
 
-    // Insert data ke tabel contact_messages
-    const { data, error } = await supabase
-      .from('contact_messages')
-      .insert([
-        {
-          full_name,
-          email,
-          phone: phone || null,
-          subject,
-          message,
-          status: 'new', // Status default: new
-        }
-      ])
-      .select();
+    // Insert data ke Firestore collection contact_messages
+    const docRef = await addDoc(collection(db, 'contact_messages'), {
+      full_name,
+      email,
+      phone: phone || null,
+      subject,
+      message,
+      status: 'new', // Status default: new
+      created_at: new Date(),
+      updated_at: new Date()
+    });
 
-    if (error) {
-      console.error('Supabase error details:', {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code
-      });
-      return NextResponse.json(
-        { 
-          error: 'Gagal menyimpan pesan. Silakan coba lagi.',
-          details: error.message 
-        },
-        { status: 500 }
-      );
-    }
-
-    console.log('Insert successful:', data);
+    console.log('Insert successful:', { id: docRef.id });
 
     return NextResponse.json(
       { 
         success: true, 
         message: 'Pesan berhasil dikirim!',
-        data: data[0]
+        data: { id: docRef.id, full_name, email, phone, subject, message }
       },
       { status: 201 }
     );
@@ -72,18 +54,16 @@ export async function POST(request: Request) {
 // GET endpoint untuk admin panel (opsional - untuk melihat pesan)
 export async function GET() {
   try {
-    const { data, error } = await supabase
-      .from('contact_messages')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const q = query(
+      collection(db, 'contact_messages'),
+      orderBy('created_at', 'desc')
+    );
 
-    if (error) {
-      console.error('Supabase error:', error);
-      return NextResponse.json(
-        { error: 'Gagal mengambil data pesan' },
-        { status: 500 }
-      );
-    }
+    const querySnapshot = await getDocs(q);
+    const data = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
 
     return NextResponse.json(data);
   } catch (error) {

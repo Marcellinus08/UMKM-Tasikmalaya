@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { db, storage } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { doc, updateDoc } from 'firebase/firestore';
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,60 +37,40 @@ export async function POST(request: NextRequest) {
     const fileName = `${id}-${Date.now()}.${fileExt}`;
     const filePath = `umkm/${fileName}`;
 
-    // Convert File to ArrayBuffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    try {
+      // Convert File to Buffer
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
 
-    // Upload to Supabase Storage
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('umkm-images')
-      .upload(filePath, buffer, {
+      // Upload to Firebase Storage
+      const storageRef = ref(storage, filePath);
+      await uploadBytes(storageRef, buffer, {
         contentType: file.type,
-        upsert: false,
       });
 
-    if (uploadError) {
+      // Get download URL
+      const imageUrl = await getDownloadURL(storageRef);
+
+      // Update database with image URL
+      const docRef = doc(db, 'umkm', id);
+      await updateDoc(docRef, { 
+        gambar_url: imageUrl,
+        updatedAt: new Date()
+      });
+
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Gambar berhasil diupload',
+        imageUrl,
+        data: { id, gambar_url: imageUrl }
+      });
+    } catch (uploadError) {
       console.error('Upload error:', uploadError);
       return NextResponse.json(
-        { error: 'Gagal mengupload gambar: ' + uploadError.message },
+        { error: 'Gagal mengupload gambar: ' + (uploadError instanceof Error ? uploadError.message : String(uploadError)) },
         { status: 500 }
       );
     }
-
-    // Get public URL
-    const { data: urlData } = supabase.storage
-      .from('umkm-images')
-      .getPublicUrl(filePath);
-
-    const imageUrl = urlData.publicUrl;
-
-    // Update database with image URL (kolom gambar_url)
-    const { data, error } = await supabase
-      .from('umkm')
-      .update({ gambar_url: imageUrl })
-      .eq('id', id)
-      .select();
-
-    if (error) {
-      console.error('Database error:', error);
-      
-      // Rollback: Delete uploaded file
-      await supabase.storage
-        .from('umkm-images')
-        .remove([filePath]);
-      
-      return NextResponse.json(
-        { error: 'Gagal menyimpan ke database' },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Gambar berhasil diupload',
-      imageUrl,
-      data 
-    });
   } catch (error) {
     console.error('API error:', error);
     return NextResponse.json(

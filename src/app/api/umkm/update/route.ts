@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 export async function PUT(request: Request) {
   try {
@@ -35,7 +36,8 @@ export async function PUT(request: Request) {
       waktu_buka: waktu_buka || null,
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
-      tentang: tentang || null
+      tentang: tentang || null,
+      updatedAt: new Date()
     };
 
     // Only update password if provided
@@ -43,25 +45,17 @@ export async function PUT(request: Request) {
       updateData.password = password;
     }
 
-    // Update in Supabase
-    const { data, error } = await supabase
-      .from('umkm')
-      .update(updateData)
-      .eq('id', id)
-      .select();
-
-    if (error) {
-      console.error('Supabase error:', error);
-      return NextResponse.json(
-        { error: 'Gagal mengupdate UMKM' },
-        { status: 500 }
-      );
-    }
+    // Update in Firestore
+    const docRef = doc(db, 'umkm', id);
+    await updateDoc(docRef, updateData);
 
     return NextResponse.json({
       success: true,
       message: 'UMKM berhasil diupdate',
-      data: data[0]
+      data: {
+        id,
+        ...updateData
+      }
     });
 
   } catch (error) {

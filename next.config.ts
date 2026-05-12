@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ['tailwindcss'],
   // Disable CSS minification to prevent aggressive purging
   experimental: {
-    optimizePackageImports: ['@supabase/supabase-js'],
+    optimizePackageImports: ['firebase'],
   },
 };
 

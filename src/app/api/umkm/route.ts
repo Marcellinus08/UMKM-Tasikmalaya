@@ -1,5 +1,16 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { db } from '@/lib/firebase';
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  offset,
+  getDocs,
+  doc,
+  getDoc,
+} from 'firebase/firestore';
 
 export async function GET(request: Request) {
   try {
@@ -12,62 +23,64 @@ export async function GET(request: Request) {
     
     // If ID is provided, return single UMKM
     if (id) {
-      const { data, error } = await supabase
-        .from('umkm')
-        .select('*')
-        .eq('id', id)
-        .single();
+      try {
+        const docRef = doc(db, 'umkm', id);
+        const docSnap = await getDoc(docRef);
 
-      if (error || !data) {
+        if (!docSnap.exists()) {
+          return NextResponse.json({ error: 'UMKM tidak ditemukan' }, { status: 404 });
+        }
+
+        return NextResponse.json({ id: docSnap.id, ...docSnap.data() });
+      } catch (error) {
+        console.error('Firebase error:', error);
         return NextResponse.json({ error: 'UMKM tidak ditemukan' }, { status: 404 });
       }
-
-      return NextResponse.json(data);
     }
     
     // Check if pagination is requested
     const usePagination = pageParam !== null || limitParam !== null || category !== null || search !== null;
     
     const page = parseInt(pageParam || '1');
-    const limit = parseInt(limitParam || '50');
-    const from = (page - 1) * limit;
-    const to = from + limit - 1;
+    const limitNum = parseInt(limitParam || '50');
+    const skipOffset = (page - 1) * limitNum;
 
-    // Query data UMKM dari Supabase
-    let query = supabase
-      .from('umkm')
-      .select('*', { count: usePagination ? 'exact' : undefined })
-      .order('id', { ascending: true });
-    
-    // Apply pagination if requested
-    if (usePagination) {
-      query = query.range(from, to);
-    }
-    
+    // Build query constraints
+    const constraints: any[] = [];
+
     // Filter by category if provided
     if (category && category !== 'Semua') {
-      query = query.eq('jenis', category);
+      constraints.push(where('jenis', '==', category));
     }
-    
-    // Filter by search if provided
+
+    // Build Firestore query
+    let queryRef = query(
+      collection(db, 'umkm'),
+      ...constraints,
+      orderBy('nama_perusahaan', 'asc')
+    );
+
+    // Get all data for filtering
+    const querySnapshot = await getDocs(queryRef);
+    let allData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    // Filter by search if provided (client-side since Firestore doesn't have full-text search)
     if (search) {
-      query = query.or(`nama_perusahaan.ilike.%${search}%,alamat.ilike.%${search}%`);
+      const searchLower = search.toLowerCase();
+      allData = allData.filter((umkm: any) =>
+        umkm.nama_perusahaan?.toLowerCase().includes(searchLower) ||
+        umkm.alamat?.toLowerCase().includes(searchLower)
+      );
     }
 
-    const { data, error, count } = await query;
-
-    if (error) {
-      console.error('Supabase error:', error);
-      // Return empty array for backward compatibility
-      return NextResponse.json(usePagination ? { data: [], pagination: { page, limit, total: 0, totalPages: 0 } } : [], { status: 200 });
-    }
-
-    if (!data) {
-      return NextResponse.json(usePagination ? { data: [], pagination: { page, limit, total: 0, totalPages: 0 } } : []);
-    }
+    // Apply pagination
+    const total = allData.length;
+    const paginatedData = usePagination
+      ? allData.slice(skipOffset, skipOffset + limitNum)
+      : allData;
 
     // Transform data ke format yang sesuai dengan struktur aplikasi
-    const transformedData = data
+    const transformedData = paginatedData
       .map((umkm: any) => {
         let lat = umkm.latitude ? parseFloat(String(umkm.latitude)) : null;
         let lng = umkm.longitude ? parseFloat(String(umkm.longitude)) : null;
@@ -112,9 +125,9 @@ export async function GET(request: Request) {
       data: transformedData,
       pagination: {
         page,
-        limit,
-        total: count || 0,
-        totalPages: Math.ceil((count || 0) / limit)
+        limit: limitNum,
+        total,
+        totalPages: Math.ceil(total / limitNum)
       }
     });
   } catch (error) {
