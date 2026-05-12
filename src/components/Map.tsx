@@ -60,7 +60,12 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
 
     fetchData();
 
-    // Get user's current location with high accuracy GPS like Google Maps
+    const handleLocationSelect = (event: any) => {
+      setSelectedLocation({ lat: event.detail.lat, lng: event.detail.lng });
+    };
+
+    window.addEventListener('umkm-location-select', handleLocationSelect);
+
     if (navigator.geolocation) {
       // First, get initial position
       navigator.geolocation.getCurrentPosition(
@@ -73,26 +78,22 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
           setUserLocation(location);
           setLocationAccuracy(accuracy);
           
-          // Notify parent component
           if (onUserLocationChange) {
             onUserLocationChange(location, accuracy);
           }
         },
         (error) => {
-          console.error('GPS Error:', error.message);
-          
-          // Fallback to Tasikmalaya center if geolocation fails
+          console.warn('GPS Error:', error.message);
           const fallbackLocation = { lat: -7.3267, lng: 108.2210 };
           setUserLocation(fallbackLocation);
         },
         {
-          enableHighAccuracy: true,  // Use GPS instead of WiFi/IP
-          timeout: 15000,            // Wait up to 15 seconds
-          maximumAge: 0              // Don't use cached position
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
         }
       );
 
-      // Watch position for real-time updates (like Google Maps)
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           const userLat = position.coords.latitude;
@@ -103,51 +104,41 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
           setUserLocation(location);
           setLocationAccuracy(accuracy);
           
-          // Notify parent component
           if (onUserLocationChange) {
             onUserLocationChange(location, accuracy);
           }
         },
         (error) => {
-          console.error('GPS watch error:', error.message);
+          console.warn('GPS watch error:', error.message);
         },
         {
           enableHighAccuracy: true,
           timeout: 10000,
-          maximumAge: 5000  // Accept positions up to 5 seconds old
+          maximumAge: 5000
         }
       );
 
-      // Cleanup watch on unmount
       return () => {
         navigator.geolocation.clearWatch(watchId);
+        window.removeEventListener('umkm-location-select', handleLocationSelect);
       };
     }
 
-    // Listen for location selection from UMKMList
-    const handleLocationSelect = (event: any) => {
-      setSelectedLocation({ lat: event.detail.lat, lng: event.detail.lng });
+    return () => {
+      window.removeEventListener('umkm-location-select', handleLocationSelect);
     };
-    
-    window.addEventListener('umkm-location-select', handleLocationSelect);
-    return () => window.removeEventListener('umkm-location-select', handleLocationSelect);
   }, []);
 
-  // Initialize map only after data is loaded
+  // Initialize map only once, even if UMKM data arrives later
   useEffect(() => {
-    if (typeof window === 'undefined' || umkms.length === 0 || mapRef.current) return;
-    
-    // Calculate bounds from all UMKM locations
-    const latLngs = umkms.map(u => [u.lat, u.lng] as L.LatLngTuple);
-    const bounds = L.latLngBounds(latLngs);
-    
+    if (typeof window === 'undefined' || mapRef.current) return;
+
     mapRef.current = L.map('map', { 
       zoomControl: true 
     });
 
     layerGroupRef.current = L.layerGroup().addTo(mapRef.current);
 
-    // Define different map styles
     const mapStyles: Record<string, { light: string; dark: string; attribution: string; subdomains?: string }> = {
       openstreetmap: {
         light: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -177,37 +168,30 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
 
     const selectedStyle = mapStyles[mapStyle] || mapStyles.openstreetmap;
 
-    // Light mode tiles
     const lightTiles = L.tileLayer(selectedStyle.light, {
       attribution: selectedStyle.attribution,
       maxZoom: 19,
       ...(selectedStyle.subdomains && { subdomains: selectedStyle.subdomains })
     });
 
-    // Dark mode tiles
     const darkTiles = L.tileLayer(selectedStyle.dark, {
       attribution: selectedStyle.attribution,
       maxZoom: 19,
       ...(selectedStyle.subdomains && { subdomains: selectedStyle.subdomains })
     });
 
-    // Set initial base layer
     if (isDark) {
       darkTiles.addTo(mapRef.current);
     } else {
       lightTiles.addTo(mapRef.current);
     }
 
-    // Store tile layers for later switching
     (mapRef.current as any).lightTiles = lightTiles;
     (mapRef.current as any).darkTiles = darkTiles;
 
-    // Calculate center point from bounds for initial view
-    const center = bounds.getCenter();
-    // Set initial view with high zoom level (shift up slightly)
-    mapRef.current.setView([center.lat + 0.02, center.lng], 13);
+    const defaultCenter = [-7.3267, 108.2210] as L.LatLngExpression;
+    mapRef.current.setView(defaultCenter, 13);
 
-    // Invalidate size after a short delay to ensure proper rendering
     setTimeout(() => {
       if (mapRef.current) {
         mapRef.current.invalidateSize();
@@ -223,7 +207,7 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
         mapRef.current = null;
       }
     };
-  }, [umkms, isDark, mapStyle]);
+  }, [isDark, mapStyle]);
 
   // Handle dark mode toggle
   useEffect(() => {
@@ -546,38 +530,6 @@ export default function Map({ isDark, category, mapStyle, selectedUMKM, onNaviga
                 font-family: 'Poppins', sans-serif;
               ">${item.category}</span>
             </div>
-            
-            <!-- Image Section (full width) -->
-            ${item.gambar ? `
-              <div style="margin-bottom: 10px;">
-                <img src="${item.gambar}" alt="${item.name}" style="
-                  width: 100%;
-                  height: 160px;
-                  border-radius: 8px;
-                  object-fit: cover;
-                  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                  border: 2px solid ${CAT_COLOR[item.category]||'#6B7280'};
-                ">
-              </div>
-            ` : `
-              <div style="
-                width: 100%;
-                height: 120px;
-                border-radius: 8px;
-                background: ${CAT_COLOR[item.category]||'#6B7280'};
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 10px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-              ">
-                <span style="
-                  font-family: 'Material Icons';
-                  font-size: 48px;
-                  color: white;
-                ">store</span>
-              </div>
-            `}
             
             <!-- Info Section -->
             <div style="margin-bottom: 10px;">

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
 
 export async function PUT(request: Request) {
   try {
@@ -46,8 +45,7 @@ export async function PUT(request: Request) {
     }
 
     // Update in Firestore
-    const docRef = doc(db, 'umkm', id);
-    await updateDoc(docRef, updateData);
+    await db.collection('umkm').doc(id).update(updateData);
 
     return NextResponse.json({
       success: true,

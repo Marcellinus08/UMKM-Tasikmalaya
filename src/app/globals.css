@@ -90,18 +90,22 @@
 
   /* Leaflet styles */
   #map {
-    height: 420px;
-    z-index: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
   }
 
   .leaflet-container {
-    z-index: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: transparent;
   }
 
   .leaflet-pane,
   .leaflet-top,
   .leaflet-bottom {
-    z-index: 1 !important;
+    z-index: auto !important;
   }
 
   /* Custom marker styles */

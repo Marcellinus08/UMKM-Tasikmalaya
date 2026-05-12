@@ -21,6 +21,22 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 ```
 
+### Firebase Admin credentials for CSV import
+
+If you want to keep the private key in `.env.local`, add this variable:
+
+```
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"...","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","client_email":"...","client_id":"...", ... }
+```
+
+> Use a single line JSON string for `FIREBASE_SERVICE_ACCOUNT`.
+
+If you prefer path-based authentication instead, set:
+
+```
+GOOGLE_APPLICATION_CREDENTIALS=path/to/serviceAccountKey.json
+```
+
 ## 3. Create Firestore Collections
 
 Create the following collections in Firestore:

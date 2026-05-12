@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, storage } from '@/lib/firebase';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { doc, updateDoc } from 'firebase/firestore';
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,24 +40,26 @@ export async function POST(request: NextRequest) {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
-      // Upload to Firebase Storage
-      const storageRef = ref(storage, filePath);
-      await uploadBytes(storageRef, buffer, {
-        contentType: file.type,
+      const bucket = storage.bucket();
+      const fileRef = bucket.file(filePath);
+      await fileRef.save(buffer, {
+        metadata: {
+          contentType: file.type,
+        },
       });
 
-      // Get download URL
-      const imageUrl = await getDownloadURL(storageRef);
+      // Make the file public so it can be accessed via URL
+      await fileRef.makePublic();
+      const imageUrl = fileRef.publicUrl();
 
       // Update database with image URL
-      const docRef = doc(db, 'umkm', id);
-      await updateDoc(docRef, { 
+      await db.collection('umkm').doc(id).update({
         gambar_url: imageUrl,
         updatedAt: new Date()
       });
 
-      return NextResponse.json({ 
-        success: true, 
+      return NextResponse.json({
+        success: true,
         message: 'Gambar berhasil diupload',
         imageUrl,
         data: { id, gambar_url: imageUrl }

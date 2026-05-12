@@ -1,23 +1,59 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import fs from 'fs';
+import path from 'path';
+import admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '',
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '',
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || '',
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || '',
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '',
-};
+const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || path.resolve(process.cwd(), 'serviceAccountKey.json');
 
-if (!firebaseConfig.projectId || !firebaseConfig.apiKey) {
-  console.warn('Firebase credentials are not set. Please add Firebase configuration to your environment variables.');
+function parseServiceAccountJson(value: string) {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    console.error('Invalid FIREBASE_SERVICE_ACCOUNT JSON:', error);
+    return null;
+  }
 }
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+let credential: admin.ServiceAccount | null = null;
+
+if (serviceAccountJson) {
+  credential = parseServiceAccountJson(serviceAccountJson);
+}
+
+if (!credential) {
+  if (fs.existsSync(serviceAccountPath)) {
+    try {
+      credential = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+    } catch (error) {
+      console.error('Gagal membaca serviceAccountKey.json:', error);
+    }
+  } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    credential = undefined as any; // applicationDefault will be used
+  }
+}
+
+if (!admin.apps.length) {
+  if (credential) {
+    admin.initializeApp({
+      credential: admin.credential.cert(credential),
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    });
+  } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    admin.initializeApp({
+      credential: admin.credential.applicationDefault(),
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    });
+  } else {
+    throw new Error(
+      'Firebase Admin credentials not found. Set FIREBASE_SERVICE_ACCOUNT in .env.local or GOOGLE_APPLICATION_CREDENTIALS to a service account JSON file.'
+    );
+  }
+}
+
+export const db = getFirestore();
+export const storage = getStorage();
 
 export interface UMKM {
   id?: string;

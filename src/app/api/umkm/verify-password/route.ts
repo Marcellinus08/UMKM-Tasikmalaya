@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
 
 export async function POST(request: Request) {
   try {
@@ -16,10 +15,9 @@ export async function POST(request: Request) {
 
     // Get UMKM from database
     try {
-      const docRef = doc(db, 'umkm', id);
-      const docSnap = await getDoc(docRef);
+      const docSnap = await db.collection('umkm').doc(id).get();
 
-      if (!docSnap.exists()) {
+      if (!docSnap.exists) {
         return NextResponse.json(
           { error: 'UMKM tidak ditemukan', valid: false },
           { status: 404 }

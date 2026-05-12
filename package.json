@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import:csv": "node scripts/import-csv-to-firestore.js"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
@@ -15,6 +16,7 @@
     "chart.js": "^4.5.1",
     "classnames": "^2.5.1",
     "firebase": "^11.10.0",
+    "firebase-admin": "^13.9.0",
     "leaflet": "^1.9.4",
     "next": "^15.1.4",
     "postcss": "^8.4.31",

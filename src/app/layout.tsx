@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from 'next/script';
 import { Poppins } from "next/font/google";
 import "./globals.css";
 
@@ -26,16 +27,16 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                const theme = localStorage.getItem('theme') || 'light';
-                document.documentElement.classList.toggle('dark', theme === 'dark');
-              })();
-            `,
-          }}
-        />
+        <Script id="theme-script" strategy="beforeInteractive">
+          {`(function() {
+            try {
+              const theme = localStorage.getItem('theme') || 'light';
+              document.documentElement.classList.toggle('dark', theme === 'dark');
+            } catch (error) {
+              console.warn('Theme init failed:', error);
+            }
+          })();`}
+        </Script>
         <link 
           rel="stylesheet" 
           href="https://fonts.googleapis.com/icon?family=Material+Icons" 

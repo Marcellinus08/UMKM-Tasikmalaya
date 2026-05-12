@@ -1,16 +1,5 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  limit,
-  offset,
-  getDocs,
-  doc,
-  getDoc,
-} from 'firebase/firestore';
 
 export async function GET(request: Request) {
   try {
@@ -24,10 +13,9 @@ export async function GET(request: Request) {
     // If ID is provided, return single UMKM
     if (id) {
       try {
-        const docRef = doc(db, 'umkm', id);
-        const docSnap = await getDoc(docRef);
+        const docSnap = await db.collection('umkm').doc(id).get();
 
-        if (!docSnap.exists()) {
+        if (!docSnap.exists) {
           return NextResponse.json({ error: 'UMKM tidak ditemukan' }, { status: 404 });
         }
 
@@ -45,24 +33,15 @@ export async function GET(request: Request) {
     const limitNum = parseInt(limitParam || '50');
     const skipOffset = (page - 1) * limitNum;
 
-    // Build query constraints
-    const constraints: any[] = [];
+    const collectionRef = db.collection('umkm');
+    let ref = collectionRef.orderBy('nama_perusahaan', 'asc');
 
-    // Filter by category if provided
     if (category && category !== 'Semua') {
-      constraints.push(where('jenis', '==', category));
+      ref = ref.where('jenis', '==', category);
     }
 
-    // Build Firestore query
-    let queryRef = query(
-      collection(db, 'umkm'),
-      ...constraints,
-      orderBy('nama_perusahaan', 'asc')
-    );
-
-    // Get all data for filtering
-    const querySnapshot = await getDocs(queryRef);
-    let allData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const querySnapshot = await ref.get();
+    let allData = querySnapshot.docs.map((document) => ({ id: document.id, ...document.data() }));
 
     // Filter by search if provided (client-side since Firestore doesn't have full-text search)
     if (search) {

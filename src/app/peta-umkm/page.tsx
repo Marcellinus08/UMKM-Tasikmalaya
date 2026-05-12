@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import { CAT_COLOR } from '@/data/umkm';
-import Image from 'next/image';
 
 interface UMKM {
   no: string; // UUID
@@ -160,26 +159,12 @@ export default function PetaUMKM() {
               >
                 <div className="flex items-start gap-2">
                   <div
-                    className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0 shadow-sm overflow-hidden"
+                    className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0 shadow-sm"
                     style={{ 
-                      backgroundColor: umkm.gambar ? 'transparent' : (CAT_COLOR[umkm.category] || '#6B7280')
+                      backgroundColor: CAT_COLOR[umkm.category] || '#6B7280'
                     }}
                   >
-                    {umkm.gambar ? (
-                      <Image 
-                        src={umkm.gambar} 
-                        alt={umkm.name}
-                        width={48}
-                        height={48}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                        placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
-                        unoptimized
-                      />
-                    ) : (
-                      <span className="material-icons text-sm" style={{ color: 'white' }}>store</span>
-                    )}
+                    <span className="material-icons text-sm" style={{ color: 'white' }}>store</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-0.5 truncate">

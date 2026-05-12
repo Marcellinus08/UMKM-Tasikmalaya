@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { collection, addDoc } from 'firebase/firestore';
 
 export async function POST(request: Request) {
   try {
@@ -43,7 +42,7 @@ export async function POST(request: Request) {
       updatedAt: new Date()
     };
 
-    const docRef = await addDoc(collection(db, 'umkm'), umkmData);
+    const docRef = await db.collection('umkm').add(umkmData);
 
     return NextResponse.json({
       success: true,

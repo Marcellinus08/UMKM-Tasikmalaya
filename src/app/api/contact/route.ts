@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, query, orderBy, getDocs } from 'firebase/firestore';
 
 export async function POST(request: Request) {
   try {
@@ -18,7 +17,7 @@ export async function POST(request: Request) {
     }
 
     // Insert data ke Firestore collection contact_messages
-    const docRef = await addDoc(collection(db, 'contact_messages'), {
+    const docRef = await db.collection('contact_messages').add({
       full_name,
       email,
       phone: phone || null,
@@ -54,13 +53,11 @@ export async function POST(request: Request) {
 // GET endpoint untuk admin panel (opsional - untuk melihat pesan)
 export async function GET() {
   try {
-    const q = query(
-      collection(db, 'contact_messages'),
-      orderBy('created_at', 'desc')
-    );
+    const querySnapshot = await db.collection('contact_messages')
+      .orderBy('created_at', 'desc')
+      .get();
 
-    const querySnapshot = await getDocs(q);
-    const data = querySnapshot.docs.map(doc => ({
+    const data = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data()
     }));
