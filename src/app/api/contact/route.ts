@@ -79,7 +79,7 @@ export async function GET() {
       .orderBy('created_at', 'desc')
       .get();
 
-    const data = querySnapshot.docs.map((doc) => ({
+    const data = querySnapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data()
     }));
